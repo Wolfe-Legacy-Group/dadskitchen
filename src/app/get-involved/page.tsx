@@ -71,32 +71,12 @@ export default function GetInvolved() {
               Word of mouth built this community — it&rsquo;s how we keep
               growing.
             </p>
-            <div className="mt-4 flex gap-4">
-              <a
-                href="https://instagram.com/dadskitchenorg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-accent-dark hover:text-foreground"
-              >
-                Instagram &rarr;
-              </a>
-              <a
-                href="https://tiktok.com/@dadskitchenorg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-accent-dark hover:text-foreground"
-              >
-                TikTok &rarr;
-              </a>
-              <a
-                href="https://facebook.com/dadskitchenorg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-accent-dark hover:text-foreground"
-              >
-                Facebook &rarr;
-              </a>
-            </div>
+            <Link
+              href="/process/spread-the-word"
+              className="mt-4 inline-block text-sm font-medium text-accent-dark hover:text-foreground"
+            >
+              Learn more &rarr;
+            </Link>
           </div>
 
           {/* 2. Participate */}
@@ -118,10 +98,10 @@ export default function GetInvolved() {
               what wasn&rsquo;t, and what you&rsquo;d change next time.
             </p>
             <Link
-              href="/contact"
+              href="/process/participate"
               className="mt-4 inline-block text-sm font-medium text-accent-dark hover:text-foreground"
             >
-              Tell us how it went &rarr;
+              Learn more &rarr;
             </Link>
           </div>
 
@@ -144,16 +124,12 @@ export default function GetInvolved() {
               changing for next time. Tag @dadskitchenorg and we&rsquo;ll
               repost it on our story or add it to our post library.
             </p>
-            <div className="mt-4 flex gap-4">
-              <a
-                href="https://instagram.com/dadskitchenorg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-accent-dark hover:text-foreground"
-              >
-                @dadskitchenorg &rarr;
-              </a>
-            </div>
+            <Link
+              href="/process/be-an-example"
+              className="mt-4 inline-block text-sm font-medium text-accent-dark hover:text-foreground"
+            >
+              Learn more &rarr;
+            </Link>
           </div>
 
           {/* 4. Be a guest chef */}
@@ -181,10 +157,10 @@ export default function GetInvolved() {
               community of dads, not a one-man show.
             </p>
             <Link
-              href="/contact"
+              href="/process/guest-chef"
               className="mt-4 inline-block text-sm font-medium text-accent-dark hover:text-foreground"
             >
-              Become a guest chef &rarr;
+              Learn more &rarr;
             </Link>
           </div>
 

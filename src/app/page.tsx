@@ -38,19 +38,75 @@ export default function Home() {
         <p className="mt-6 max-w-lg text-lg leading-relaxed text-foreground-2 md:text-xl">
           Where dads and kids cook side by side and talk face to face.
         </p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href="/watch"
-            className="rounded bg-accent px-6 py-3 text-sm font-semibold text-btn-text transition-colors hover:bg-accent-dark"
-          >
-            Watch our videos
-          </Link>
-          <Link
-            href="/get-involved"
-            className="px-2 py-3 text-sm font-medium text-accent-dark transition-colors hover:text-foreground"
-          >
-            Get involved &rarr;
-          </Link>
+      </section>
+
+      {/* Our process */}
+      <section className="border-t border-rule">
+        <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+            Our process
+          </p>
+          <h2 className="mt-4 font-serif text-2xl md:text-3xl">
+            Four ways to be part of this
+          </h2>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                step: "1",
+                title: "Spread the Word",
+                desc: "Follow us, share our content, and help us reach more dads.",
+                href: "/process/spread-the-word",
+              },
+              {
+                step: "2",
+                title: "Participate",
+                desc: "Try it with your kids. Adapt it. Tell us how it went.",
+                href: "/process/participate",
+              },
+              {
+                step: "3",
+                title: "Be an Example",
+                desc: "Post your experience, tag us, and inspire other dads.",
+                href: "/process/be-an-example",
+              },
+              {
+                step: "4",
+                title: "Guest Chef",
+                desc: "Film a full episode and become part of our video library.",
+                href: "/process/guest-chef",
+                accent: true,
+              },
+            ].map((item) => (
+              <Link
+                key={item.step}
+                href={item.href}
+                className="group flex flex-col rounded-lg border border-card-border bg-card-bg p-5 transition-shadow hover:shadow-md"
+              >
+                <span
+                  className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
+                    item.accent
+                      ? "bg-warm/10 text-warm"
+                      : "bg-accent/10 text-accent"
+                  }`}
+                >
+                  {item.step}
+                </span>
+                <h3 className="mt-3 font-serif text-lg">{item.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground-2">
+                  {item.desc}
+                </p>
+                <span
+                  className={`mt-4 text-sm font-medium ${
+                    item.accent
+                      ? "text-warm group-hover:text-foreground"
+                      : "text-accent-dark group-hover:text-foreground"
+                  }`}
+                >
+                  Learn more &rarr;
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
