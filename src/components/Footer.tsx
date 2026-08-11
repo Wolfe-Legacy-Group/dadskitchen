@@ -36,7 +36,7 @@ export function Footer() {
           </p>
           <nav className="mt-3 flex flex-col gap-2">
             <a
-              href="https://instagram.com"
+              href="https://instagram.com/dadskitchenorg"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-foreground-2 hover:text-foreground"
@@ -44,15 +44,15 @@ export function Footer() {
               Instagram
             </a>
             <a
-              href="https://youtube.com"
+              href="https://tiktok.com/@dadskitchenorg"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-foreground-2 hover:text-foreground"
             >
-              YouTube
+              TikTok
             </a>
             <a
-              href="https://facebook.com"
+              href="https://facebook.com/dadskitchenorg"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-foreground-2 hover:text-foreground"

@@ -83,7 +83,7 @@ export default function GetInvolved() {
             </p>
             <div className="mt-4 flex gap-4">
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/dadskitchenorg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-accent-dark hover:text-foreground"
@@ -91,12 +91,20 @@ export default function GetInvolved() {
                 Instagram &rarr;
               </a>
               <a
-                href="https://youtube.com"
+                href="https://tiktok.com/@dadskitchenorg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-accent-dark hover:text-foreground"
               >
-                YouTube &rarr;
+                TikTok &rarr;
+              </a>
+              <a
+                href="https://facebook.com/dadskitchenorg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-accent-dark hover:text-foreground"
+              >
+                Facebook &rarr;
               </a>
             </div>
           </div>
