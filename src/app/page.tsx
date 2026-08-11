@@ -1,5 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-import { LogoMark } from "@/components/Logo";
 
 const videos = [
   {
@@ -30,18 +30,27 @@ export default function Home() {
     <>
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-20 md:pb-24 md:pt-32">
-        <div className="flex items-center gap-2">
-          <LogoMark className="h-6 w-6" />
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-            A Mens Philanthropy Foundation Initiative
-          </p>
+        <div className="flex items-center justify-between gap-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+              A Mens Philanthropy Foundation Initiative
+            </p>
+            <h1 className="mt-4 font-serif text-5xl tracking-tight md:text-7xl">
+              Dad&rsquo;s Kitchen
+            </h1>
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-foreground-2 md:text-xl">
+              Where dads and kids cook side by side and talk face to face.
+            </p>
+          </div>
+          <Image
+            src="/logo.png"
+            alt="Dad's Kitchen logo"
+            width={280}
+            height={280}
+            className="hidden shrink-0 md:block"
+            priority
+          />
         </div>
-        <h1 className="mt-4 font-serif text-5xl tracking-tight md:text-7xl">
-          Dad&rsquo;s Kitchen
-        </h1>
-        <p className="mt-6 max-w-lg text-lg leading-relaxed text-foreground-2 md:text-xl">
-          Where dads and kids cook side by side and talk face to face.
-        </p>
       </section>
 
       {/* Our process */}
