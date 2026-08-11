@@ -13,6 +13,7 @@
   --card-bg: rgba(255, 255, 255, 0.45);
   --card-border: rgba(42, 38, 35, 0.08);
   --btn-text: #fff;
+  --enamel: #1B365D;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,6 +30,7 @@
     --card-bg: rgba(255, 255, 255, 0.035);
     --card-border: rgba(255, 255, 255, 0.06);
     --btn-text: #1E1C1A;
+    --enamel: #5B8EC4;
   }
 }
 
@@ -51,6 +53,7 @@
   --color-herb: #5E6E4B;
   --color-copper: #C17F3E;
   --color-smoke: #7D7770;
+  --color-enamel: var(--enamel);
 
   --font-serif: var(--font-lora), Georgia, 'Palatino Linotype', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;

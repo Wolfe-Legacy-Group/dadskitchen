@@ -1,11 +1,15 @@
 import Link from "next/link";
+import { LogoMark } from "./Logo";
 
 export function Footer() {
   return (
     <footer className="border-t border-rule">
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 sm:grid-cols-3">
         <div>
-          <p className="font-serif text-lg">Dad&rsquo;s Kitchen</p>
+          <div className="flex items-center gap-2">
+            <LogoMark className="h-7 w-7" />
+            <p className="font-serif text-lg text-enamel">Dad&rsquo;s Kitchen</p>
+          </div>
           <p className="mt-2 text-sm leading-relaxed text-foreground-2">
             A program of the Mens Philanthropy Foundation, a 501(c)(3) nonprofit
             dedicated to strengthening fatherhood through cooking and

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LogoMark } from "./Logo";
 
 const links = [
   { href: "/about", label: "About" },
@@ -16,8 +17,11 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-rule bg-background/90 backdrop-blur-sm">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-serif text-lg tracking-tight">
-          Dad&rsquo;s Kitchen
+        <Link href="/" className="flex items-center gap-2">
+          <LogoMark className="h-8 w-8" />
+          <span className="font-serif text-lg tracking-tight text-enamel">
+            Dad&rsquo;s Kitchen
+          </span>
         </Link>
 
         {/* Desktop links */}
