@@ -65,7 +65,7 @@ export default function Home() {
                 className="overflow-hidden rounded-md border border-card-border bg-card-bg"
               >
                 <div
-                  className={`flex aspect-video items-center justify-center ${v.bg}`}
+                  className={`flex aspect-video flex-col items-center justify-center gap-1 ${v.bg}`}
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -74,6 +74,9 @@ export default function Home() {
                   >
                     <polygon points="9.5,6.5 9.5,17.5 18,12" />
                   </svg>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
+                    Coming soon
+                  </span>
                 </div>
                 <div className="px-4 py-3">
                   <p className="text-sm font-semibold">{v.title}</p>
