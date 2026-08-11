@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "Dad's Kitchen",
     type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
