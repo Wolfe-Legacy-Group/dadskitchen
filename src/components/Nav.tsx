@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LogoMark } from "./Logo";
 
 const links = [
   { href: "/about", label: "About" },
@@ -15,13 +14,10 @@ export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-rule bg-background/90 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-nav-bg">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <LogoMark className="h-8 w-8" />
-          <span className="font-serif text-lg tracking-tight text-enamel">
-            Dad&rsquo;s Kitchen
-          </span>
+        <Link href="/" className="font-serif text-lg tracking-tight text-white">
+          Dad&rsquo;s Kitchen
         </Link>
 
         {/* Desktop links */}
@@ -30,14 +26,14 @@ export function Nav() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm text-foreground-2 transition-colors hover:text-foreground"
+              className="text-sm text-nav-link transition-colors hover:text-nav-link-hover"
             >
               {l.label}
             </Link>
           ))}
           <Link
             href="/get-involved#donate"
-            className="rounded bg-accent px-4 py-2 text-sm font-semibold text-btn-text transition-colors hover:bg-accent-dark"
+            className="rounded bg-warm px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
             Donate
           </Link>
@@ -50,26 +46,26 @@ export function Nav() {
           aria-label={open ? "Close menu" : "Open menu"}
         >
           <span
-            className={`block h-0.5 w-5 bg-foreground transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
+            className={`block h-0.5 w-5 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
           />
           <span
-            className={`block h-0.5 w-5 bg-foreground transition-opacity ${open ? "opacity-0" : ""}`}
+            className={`block h-0.5 w-5 bg-white transition-opacity ${open ? "opacity-0" : ""}`}
           />
           <span
-            className={`block h-0.5 w-5 bg-foreground transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
+            className={`block h-0.5 w-5 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
           />
         </button>
       </nav>
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-t border-rule px-6 pb-4 md:hidden">
+        <div className="border-t border-white/10 px-6 pb-4 md:hidden">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="block py-2.5 text-sm text-foreground-2 transition-colors hover:text-foreground"
+              className="block py-2.5 text-sm text-nav-link transition-colors hover:text-nav-link-hover"
             >
               {l.label}
             </Link>
@@ -77,7 +73,7 @@ export function Nav() {
           <Link
             href="/get-involved#donate"
             onClick={() => setOpen(false)}
-            className="mt-2 block rounded bg-accent px-4 py-2.5 text-center text-sm font-semibold text-btn-text"
+            className="mt-2 block rounded bg-warm px-4 py-2.5 text-center text-sm font-semibold text-white"
           >
             Donate
           </Link>

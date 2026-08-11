@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/Logo";
 
 const videos = [
   {
@@ -29,9 +30,12 @@ export default function Home() {
     <>
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-20 md:pb-24 md:pt-32">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-          A Mens Philanthropy Foundation Initiative
-        </p>
+        <div className="flex items-center gap-2">
+          <LogoMark className="h-6 w-6" />
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+            A Mens Philanthropy Foundation Initiative
+          </p>
+        </div>
         <h1 className="mt-4 font-serif text-5xl tracking-tight md:text-7xl">
           Dad&rsquo;s Kitchen
         </h1>
