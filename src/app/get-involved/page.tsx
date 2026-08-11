@@ -111,15 +111,35 @@ export default function GetInvolved() {
 
           <div className="rounded-lg border border-card-border bg-card-bg p-6 md:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+              Host
+            </p>
+            <h2 className="mt-2 font-serif text-2xl">Host a dinner</h2>
+            <p className="mt-3 leading-relaxed text-foreground-2">
+              Cook a meal with your kids and make it count. You don&rsquo;t
+              have to film anything — just do the thing. If you want to
+              share the experience, snap three photos: cooking together,
+              talking at the table, and cleaning up. Tag us and
+              we&rsquo;ll repost it.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-4 inline-block text-sm font-medium text-accent-dark hover:text-foreground"
+            >
+              Learn more &rarr;
+            </Link>
+          </div>
+
+          <div className="rounded-lg border border-card-border bg-card-bg p-6 md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-warm">
               Create
             </p>
-            <h2 className="mt-2 font-serif text-2xl">Send us your videos</h2>
+            <h2 className="mt-2 font-serif text-2xl">Be a guest instructor</h2>
             <p className="mt-3 leading-relaxed text-foreground-2">
-              Already cooking with your kids? Film it. It doesn&rsquo;t
-              have to be polished — just real. Send us your clips and
-              we&rsquo;ll feature them on the site and share them from our
-              social media accounts. This is a community of dads, not a
-              one-man show.
+              Ready to go all in? Film a Dad&rsquo;s Kitchen episode with
+              your kids — pick a recipe, cook it together, ask the
+              questions, and reflect on how it went. We&rsquo;ll feature
+              your video on the site and across our social channels. This
+              is a community of dads, not a one-man show.
             </p>
             <Link
               href="/contact"
