@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dadskitchen",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/cecilwolfe/Developer/dadskitchen"],
+      "port": 3000
+    }
+  ]
+}
