@@ -111,19 +111,21 @@ export default function GetInvolved() {
 
           <div className="rounded-lg border border-card-border bg-card-bg p-6 md:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-              Host
+              Create
             </p>
-            <h2 className="mt-2 font-serif text-2xl">Host a dinner</h2>
+            <h2 className="mt-2 font-serif text-2xl">Send us your videos</h2>
             <p className="mt-3 leading-relaxed text-foreground-2">
-              Invite a few dads and their kids over. Cook together. Eat
-              together. It doesn&rsquo;t have to be fancy — it just has to
-              happen. We can help you plan it.
+              Already cooking with your kids? Film it. It doesn&rsquo;t
+              have to be polished — just real. Send us your clips and
+              we&rsquo;ll feature them on the site and share them from our
+              social media accounts. This is a community of dads, not a
+              one-man show.
             </p>
             <Link
               href="/contact"
               className="mt-4 inline-block text-sm font-medium text-accent-dark hover:text-foreground"
             >
-              Learn more &rarr;
+              Submit a video &rarr;
             </Link>
           </div>
         </div>
