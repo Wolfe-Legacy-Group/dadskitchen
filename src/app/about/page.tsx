@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "The story behind Dad's Kitchen — how one single father turned mealtime into the most meaningful time of the day.",
+    "The story behind Dad's Kitchen — how one single dad turned mealtime into the most meaningful time of the day.",
 };
 
 export default function About() {
@@ -24,7 +24,7 @@ export default function About() {
       <section className="mx-auto max-w-3xl px-6 pb-16">
         <div className="space-y-6 text-lg leading-relaxed text-foreground-2">
           <p>
-            As a single father, I realized that a surprising amount of my time
+            As a single dad, I realized that a surprising amount of my time
             with my kids happened around meals. So I learned to make the kitchen
             count.
           </p>
