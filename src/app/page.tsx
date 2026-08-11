@@ -30,7 +30,7 @@ export default function Home() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-20 md:pb-24 md:pt-32">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-          Mens Philanthropy Foundation
+          A Mens Philanthropy Foundation Initiative
         </p>
         <h1 className="mt-4 font-serif text-5xl tracking-tight md:text-7xl">
           Dad&rsquo;s Kitchen
