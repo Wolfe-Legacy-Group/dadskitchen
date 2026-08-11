@@ -29,25 +29,17 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pb-16 pt-20 md:pb-24 md:pt-32">
-        <div className="flex items-center justify-between gap-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-              A Mens Philanthropy Foundation Initiative
-            </p>
-            <h1 className="mt-4 font-serif text-5xl tracking-tight md:text-7xl">
-              Dad&rsquo;s Kitchen
-            </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-foreground-2 md:text-xl">
-              Where dads and kids cook side by side and talk face to face.
-            </p>
-          </div>
+      <section className="mx-auto max-w-6xl px-6 pb-16 pt-16 md:pb-24 md:pt-24">
+        <div className="flex flex-col items-center text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+            A Mens Philanthropy Foundation Initiative
+          </p>
           <Image
-            src="/logo.png"
-            alt="Dad's Kitchen logo"
-            width={280}
-            height={280}
-            className="hidden shrink-0 md:block"
+            src="/logo-tagline.png"
+            alt="Dad's Kitchen — Helping dads and kids cook side by side and talk face to face"
+            width={420}
+            height={420}
+            className="mt-8 w-full max-w-sm md:max-w-md"
             priority
           />
         </div>
