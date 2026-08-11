@@ -8,7 +8,7 @@ There's a reason we chose the kitchen. It's not because cooking is the most impo
 
 ## The hands are busy
 
-When you're chopping vegetables or stirring a pot, the pressure of eye contact goes away. Kids — especially older ones — talk more freely when they're doing something with their hands. The kitchen gives them that cover.
+When you're chopping vegetables or stirring a pot, the pressure of eye contact goes away. Kids — especially older ones — talk more freely when they're doing something with their hands that isn't their phone. The kitchen gives them that cover.
 
 ## The stakes are low
 
