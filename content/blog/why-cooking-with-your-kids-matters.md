@@ -1,6 +1,7 @@
 ---
-title: "Why Cooking with Your Kids Matters"
-date: "2026-08-11"
+title: "Why Cooking with Your Kids Matters ❤️"
+date: "2026-08-12"
+order: 2
 summary: "It's not about the food. It's about what happens while the food is being made."
 ---
 

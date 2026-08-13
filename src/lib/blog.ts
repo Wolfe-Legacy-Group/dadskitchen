@@ -10,6 +10,7 @@ export interface Post {
   date: string;
   summary: string;
   content: string;
+  order: number;
 }
 
 export function getAllPosts(): Post[] {
@@ -26,9 +27,10 @@ export function getAllPosts(): Post[] {
         date: data.date ?? "",
         summary: data.summary ?? "",
         content,
+        order: data.order ?? 999,
       };
     })
-    .sort((a, b) => (a.date > b.date ? -1 : 1));
+    .sort((a, b) => a.order - b.order);
 }
 
 export function getPost(slug: string): Post | undefined {
@@ -44,5 +46,6 @@ export function getPost(slug: string): Post | undefined {
     date: data.date ?? "",
     summary: data.summary ?? "",
     content,
+    order: data.order ?? 999,
   };
 }
