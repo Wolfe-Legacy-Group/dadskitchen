@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getRecipeBySlug } from "@/lib/recipes";
+import { ConversationStarters } from "@/components/ConversationStarters";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -52,6 +53,12 @@ export default async function RecipePage({ params }: Props) {
         <Badge label="Cook" value={`${recipe.cook_time_minutes} min`} />
         <Badge label="Total" value={`${recipe.total_time_minutes} min`} />
         <Badge label="Servings" value={String(recipe.servings)} />
+        {recipe.yield_amount && (
+          <>
+            <Badge label="Per Serving" value={String(Math.round(recipe.yield_amount / recipe.servings))} />
+            <Badge label={`Total ${recipe.yield_unit ?? "pieces"}`} value={String(recipe.yield_amount)} />
+          </>
+        )}
         <Badge label="Ages" value={recipe.kid_age_range} />
       </div>
 
@@ -80,15 +87,8 @@ export default async function RecipePage({ params }: Props) {
         </p>
       </div>
 
-      {/* Conversation starter */}
-      <div className="mt-8 rounded-lg border-l-4 border-warm bg-warm/5 p-5">
-        <p className="text-xs font-semibold uppercase tracking-widest text-warm">
-          Conversation starter
-        </p>
-        <p className="mt-2 font-serif text-lg text-foreground">
-          {recipe.conversation_starter}
-        </p>
-      </div>
+      {/* Conversation starters */}
+      <ConversationStarters starters={recipe.conversationStarters} />
 
       {/* Ingredients */}
       <section className="mt-10">
@@ -144,14 +144,14 @@ export default async function RecipePage({ params }: Props) {
             <div key={step.id} className="flex gap-4">
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${
-                  step.is_kid_friendly ? "bg-accent" : "bg-foreground-3"
+                  step.min_age != null ? "bg-accent" : "bg-foreground-3"
                 }`}
               >
                 {step.step_number}
               </div>
-              <div className="pt-1">
+              <div className="pt-1 flex-1">
                 <p className="text-foreground-2">{step.instruction}</p>
-                {step.is_kid_friendly && step.kid_note && (
+                {step.kid_note && (
                   <p className="mt-1 text-sm text-accent">
                     {step.kid_note}
                   </p>
@@ -161,9 +161,16 @@ export default async function RecipePage({ params }: Props) {
                     {step.safety_warning}
                   </p>
                 )}
-                {!step.is_kid_friendly && !step.safety_warning && (
-                  <p className="mt-1 text-xs text-foreground-3">Adult step</p>
-                )}
+                <div className="mt-2 flex gap-2">
+                  <AgeChip age={4} active={step.min_age != null && step.min_age <= 4} />
+                  <AgeChip age={6} active={step.min_age != null && step.min_age <= 6} />
+                  <AgeChip age={8} active={step.min_age != null && step.min_age <= 8} />
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[10px] font-medium bg-foreground-3/20 text-foreground-2"
+                  >
+                    Adult
+                  </span>
+                </div>
               </div>
             </div>
           ))}
@@ -171,11 +178,11 @@ export default async function RecipePage({ params }: Props) {
         <div className="mt-4 flex gap-4 text-xs text-foreground-3">
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-3 w-3 rounded-full bg-accent" />
-            Kid-friendly
+            Can help with this step
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="inline-block h-3 w-3 rounded-full bg-foreground-3" />
-            Adult step
+            <span className="inline-block h-3 w-3 rounded-full bg-foreground-3/30" />
+            Not recommended
           </span>
         </div>
       </section>
@@ -238,5 +245,19 @@ function Badge({ label, value }: { label: string; value: string }) {
       </p>
       <p className="text-sm font-medium text-foreground">{value}</p>
     </div>
+  );
+}
+
+function AgeChip({ age, active }: { age: number; active: boolean }) {
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+        active
+          ? "bg-accent/20 text-accent"
+          : "bg-foreground-3/10 text-foreground-3 line-through"
+      }`}
+    >
+      {age}+
+    </span>
   );
 }

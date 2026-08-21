@@ -15,6 +15,8 @@ export interface Recipe {
   leftover_tips: string;
   safety_notes: string;
   image_url: string | null;
+  yield_amount: number | null;
+  yield_unit: string | null;
 }
 
 export interface Ingredient {
@@ -37,6 +39,13 @@ export interface Step {
   is_kid_friendly: boolean;
   kid_note: string | null;
   safety_warning: string | null;
+  min_age: number | null;
+}
+
+export interface ConversationStarter {
+  id: string;
+  question: string;
+  sort_order: number;
 }
 
 export interface Substitution {
@@ -50,6 +59,7 @@ export interface RecipeDetail extends Recipe {
   ingredients: Ingredient[];
   steps: Step[];
   substitutions: Substitution[];
+  conversationStarters: ConversationStarter[];
 }
 
 export async function getAllRecipes(): Promise<Recipe[]> {
@@ -75,7 +85,7 @@ export async function getRecipeBySlug(
 
   if (error || !recipe) return null;
 
-  const [ingredients, steps, substitutions] = await Promise.all([
+  const [ingredients, steps, substitutions, starters] = await Promise.all([
     supabase
       .from("recipe_ingredients")
       .select("*")
@@ -90,6 +100,11 @@ export async function getRecipeBySlug(
       .from("recipe_substitutions")
       .select("*")
       .eq("recipe_id", recipe.id),
+    supabase
+      .from("recipe_conversation_starters")
+      .select("*")
+      .eq("recipe_id", recipe.id)
+      .order("sort_order"),
   ]);
 
   return {
@@ -97,5 +112,6 @@ export async function getRecipeBySlug(
     ingredients: ingredients.data ?? [],
     steps: steps.data ?? [],
     substitutions: substitutions.data ?? [],
+    conversationStarters: starters.data ?? [],
   };
 }
