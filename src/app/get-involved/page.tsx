@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DonateForm } from "@/components/DonateForm";
 
 export const metadata: Metadata = {
   title: "Get Involved",
@@ -43,17 +44,11 @@ export default function GetInvolved() {
               resources for dads, and reach families who need this.
             </p>
             <p className="mt-3 leading-relaxed text-foreground-2">
-              We&rsquo;re building our online donation platform now. In the
-              meantime, we&rsquo;d love to hear from you — whether you want
-              to contribute financially, volunteer your time, or partner with
-              us in another way.
+              Let us know you&rsquo;re interested and we&rsquo;ll send you
+              our 501(c)(3) documentation along with details on how your
+              contribution will be used.
             </p>
-            <Link
-              href="/contact"
-              className="mt-4 inline-block rounded bg-warm px-6 py-3 text-sm font-semibold text-btn-text transition-opacity hover:opacity-90"
-            >
-              Get in touch
-            </Link>
+            <DonateForm />
           </div>
 
           {/* 1. Spread the word */}
