@@ -4,26 +4,6 @@ import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
 
-const videos = [
-  {
-    title: "Pancakes with Dad",
-    ages: "Ages 4–6",
-    duration: "4 min",
-    bg: "bg-herb/80",
-  },
-  {
-    title: "Taco Tuesday",
-    ages: "Ages 7–10",
-    duration: "6 min",
-    bg: "bg-copper/80",
-  },
-  {
-    title: "The Sunday Roast",
-    ages: "Ages 11–14",
-    duration: "8 min",
-    bg: "bg-smoke/80",
-  },
-];
 
 async function getLatestRecipes() {
   const { data: recipes } = await supabase
@@ -196,53 +176,6 @@ export default async function Home() {
                 </span>
               </Link>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured videos */}
-      <section className="border-t border-rule">
-        <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-            In production
-          </p>
-          <h2 className="mt-4 font-serif text-2xl">What we&rsquo;re filming</h2>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {videos.map((v) => (
-              <article
-                key={v.title}
-                className="overflow-hidden rounded-md border border-card-border bg-card-bg"
-              >
-                <div
-                  className={`flex aspect-video flex-col items-center justify-center gap-1 ${v.bg}`}
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-10 w-10 text-white/80 drop-shadow-md"
-                  >
-                    <polygon points="9.5,6.5 9.5,17.5 18,12" />
-                  </svg>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
-                    Coming soon
-                  </span>
-                </div>
-                <div className="px-4 py-3">
-                  <p className="text-sm font-semibold">{v.title}</p>
-                  <p className="text-xs text-foreground-3">
-                    {v.ages} &middot; {v.duration}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-          <div className="mt-8">
-            <Link
-              href="/watch"
-              className="text-sm font-medium text-accent-dark hover:text-foreground"
-            >
-              See all videos &rarr;
-            </Link>
           </div>
         </div>
       </section>
