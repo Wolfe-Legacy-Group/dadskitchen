@@ -47,6 +47,7 @@ export interface ConversationStarter {
   id: string;
   question: string;
   sort_order: number;
+  moment: "cooking" | "table";
 }
 
 export interface Substitution {

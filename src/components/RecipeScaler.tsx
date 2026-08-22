@@ -88,7 +88,8 @@ export function RecipeScaler({
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [starterIdx, setStarterIdx] = useState(0);
+  const [cookingIdx, setCookingIdx] = useState(0);
+  const [tableIdx, setTableIdx] = useState(0);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -176,6 +177,9 @@ export function RecipeScaler({
     }
   }
 
+  const cookingStarters = conversationStarters.filter((s) => s.moment === "cooking");
+  const tableStarters = conversationStarters.filter((s) => s.moment === "table");
+
   const visibleTabs = substitutions.length > 0
     ? TABS
     : TABS.filter((t) => t.key !== "substitutions");
@@ -260,26 +264,54 @@ export function RecipeScaler({
       {/* Tab content */}
       <div className="mt-6">
         {activeTab === "convos" && (
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-foreground-3">
-              Conversation starter
-            </p>
-            <p className="mt-3 text-lg leading-relaxed text-foreground-2">
-              {conversationStarters[starterIdx]?.question}
-            </p>
-            <div className="mt-4 flex items-center gap-3">
-              <button
-                onClick={() =>
-                  setStarterIdx((i) => (i + 1) % conversationStarters.length)
-                }
-                className="rounded-md border border-card-border bg-card-bg px-3 py-1.5 text-sm text-foreground-3 hover:text-foreground"
-              >
-                Next conversation starter
-              </button>
-              <span className="text-xs text-foreground-3">
-                {starterIdx + 1} of {conversationStarters.length}
-              </span>
-            </div>
+          <div className="space-y-8">
+            {cookingStarters.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground-3">
+                  While you cook
+                </p>
+                <p className="mt-3 text-lg leading-relaxed text-foreground-2">
+                  {cookingStarters[cookingIdx]?.question}
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                  <button
+                    onClick={() =>
+                      setCookingIdx((i) => (i + 1) % cookingStarters.length)
+                    }
+                    className="rounded-md border border-card-border bg-card-bg px-3 py-1.5 text-sm text-foreground-3 hover:text-foreground"
+                  >
+                    Next question
+                  </button>
+                  <span className="text-xs text-foreground-3">
+                    {cookingIdx + 1} of {cookingStarters.length}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {tableStarters.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground-3">
+                  At the table
+                </p>
+                <p className="mt-3 text-lg leading-relaxed text-foreground-2">
+                  {tableStarters[tableIdx]?.question}
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                  <button
+                    onClick={() =>
+                      setTableIdx((i) => (i + 1) % tableStarters.length)
+                    }
+                    className="rounded-md border border-card-border bg-card-bg px-3 py-1.5 text-sm text-foreground-3 hover:text-foreground"
+                  >
+                    Next question
+                  </button>
+                  <span className="text-xs text-foreground-3">
+                    {tableIdx + 1} of {tableStarters.length}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
