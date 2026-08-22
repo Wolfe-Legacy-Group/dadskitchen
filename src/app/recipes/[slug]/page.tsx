@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getRecipeBySlug } from "@/lib/recipes";
 import { ConversationStarters } from "@/components/ConversationStarters";
+import { RecipeScaler } from "@/components/RecipeScaler";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -25,12 +26,6 @@ export default async function RecipePage({ params }: Props) {
   const recipe = await getRecipeBySlug(slug);
   if (!recipe) notFound();
 
-  const totalCost = recipe.ingredients.reduce(
-    (sum, i) => sum + Number(i.estimated_cost_usd),
-    0
-  );
-  const costPerServing = totalCost / recipe.servings;
-
   return (
     <article className="mx-auto max-w-3xl px-6 pb-16 pt-16 md:pt-24">
       <Link
@@ -46,105 +41,25 @@ export default async function RecipePage({ params }: Props) {
       </h1>
       <p className="mt-3 text-foreground-2">{recipe.description}</p>
 
-      {/* Meta badges */}
+      {/* Static meta badges */}
       <div className="mt-6 flex flex-wrap gap-3">
         <Badge label="Difficulty" value={recipe.difficulty} />
         <Badge label="Prep" value={`${recipe.prep_time_minutes} min`} />
         <Badge label="Cook" value={`${recipe.cook_time_minutes} min`} />
         <Badge label="Total" value={`${recipe.total_time_minutes} min`} />
-        <Badge label="Servings" value={String(recipe.servings)} />
-        {recipe.yield_amount && (() => {
-          const unit = recipe.yield_unit ?? "pieces";
-          const perServing = Math.round(recipe.yield_amount / recipe.servings);
-          const singularUnit = unit.endsWith("es") && unit !== "pancakes"
-            ? unit.slice(0, -2)
-            : unit.endsWith("s")
-              ? unit.slice(0, -1)
-              : unit;
-          const displayUnit = perServing === 1 ? singularUnit : unit;
-          return (
-            <>
-              <Badge label="1 Serving" value={`${perServing} ${displayUnit}`} />
-              <Badge label={`Total ${unit}`} value={String(recipe.yield_amount)} />
-            </>
-          );
-        })()}
         <Badge label="Ages" value={recipe.kid_age_range} />
       </div>
 
-      {/* Cost summary */}
-      <div className="mt-8 rounded-lg border border-card-border bg-card-bg p-5">
-        <p className="text-xs font-semibold uppercase tracking-widest text-foreground-3">
-          Estimated cost (Walmart.com, Aug 2026)
-        </p>
-        <div className="mt-2 flex gap-8">
-          <div>
-            <p className="text-2xl font-bold text-foreground">
-              ~${totalCost.toFixed(2)}
-            </p>
-            <p className="text-xs text-foreground-3">total recipe</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">
-              ~${costPerServing.toFixed(2)}
-            </p>
-            <p className="text-xs text-foreground-3">per serving</p>
-          </div>
-        </div>
-        <p className="mt-3 text-xs text-foreground-3">
-          Prices checked at Walmart.com on Aug 2026. Based on full package costs
-          — you may already have some of these ingredients on hand.
-        </p>
-      </div>
+      {/* Batch size toggle + scaled badges, cost, ingredients */}
+      <RecipeScaler
+        servings={recipe.servings}
+        yieldAmount={recipe.yield_amount}
+        yieldUnit={recipe.yield_unit}
+        ingredients={recipe.ingredients}
+      />
 
       {/* Conversation starters */}
       <ConversationStarters starters={recipe.conversationStarters} />
-
-      {/* Ingredients */}
-      <section className="mt-10">
-        <h2 className="font-serif text-2xl text-foreground">Ingredients</h2>
-        <div className="mt-4 space-y-4">
-          {recipe.ingredients.map((ing) => (
-            <div
-              key={ing.id}
-              className="rounded-lg border border-card-border bg-card-bg p-4"
-            >
-              <div className="flex items-baseline justify-between gap-4">
-                <p className="font-medium text-foreground">
-                  {ing.quantity} {ing.unit} {ing.name}
-                </p>
-                <p className="shrink-0 text-sm font-medium text-warm">
-                  ~${Number(ing.estimated_cost_usd).toFixed(2)}
-                </p>
-              </div>
-              {ing.cost_note && (
-                <p className="mt-1 text-xs text-foreground-3">
-                  {ing.cost_note}
-                </p>
-              )}
-              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-foreground-3">
-                    Prep
-                  </p>
-                  <p className="text-foreground-2">
-                    {ing.prep_required}
-                    {ing.prep_time_minutes
-                      ? ` (~${ing.prep_time_minutes} min)`
-                      : ""}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-foreground-3">
-                    Store the rest
-                  </p>
-                  <p className="text-foreground-2">{ing.storage_tip}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* Steps */}
       <section className="mt-10">

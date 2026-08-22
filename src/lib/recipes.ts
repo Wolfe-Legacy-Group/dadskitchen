@@ -30,6 +30,7 @@ export interface Ingredient {
   storage_tip: string;
   prep_required: string;
   prep_time_minutes: number | null;
+  quantity_decimal: number | null;
 }
 
 export interface Step {
