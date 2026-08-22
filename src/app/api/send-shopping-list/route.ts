@@ -12,6 +12,7 @@ interface RequestBody {
   recipeName: string;
   recipeSlug: string;
   items: ShoppingItem[];
+  alreadyHave: string[];
   totalCost: string;
   multiplier: number;
 }
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
   }
 
   const body: RequestBody = await request.json();
-  const { email, recipeName, recipeSlug, items, totalCost, multiplier } = body;
+  const { email, recipeName, recipeSlug, items, alreadyHave, totalCost, multiplier } = body;
 
   if (!email || !items?.length) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -47,6 +48,22 @@ export async function POST(request: Request) {
 
   const batchNote =
     multiplier > 1 ? ` (${multiplier}x batch)` : "";
+
+  const alreadyHaveSection =
+    alreadyHave?.length
+      ? `<div style="margin:20px 0 0;padding:16px;border-radius:8px;background:#222019;">
+          <p style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#8a7e6e;margin:0 0 8px;">Already in your kitchen</p>
+          <p style="font-size:13px;color:#6b6359;margin:0;">${alreadyHave.join(" &middot; ")}</p>
+        </div>`
+      : "";
+
+  const batchLinks = [1, 2, 3, 4]
+    .filter((b) => b !== multiplier)
+    .map(
+      (b) =>
+        `<a href="${recipeUrl}?batch=${b}" style="color:#d4a574;text-decoration:none;font-weight:bold;">${b}x</a>`
+    )
+    .join(" &nbsp;&middot;&nbsp; ");
 
   const html = `
     <div style="font-family:Georgia,serif;max-width:560px;margin:0 auto;color:#e8e0d4;background:#1a1714;padding:32px;border-radius:12px;">
@@ -74,17 +91,23 @@ export async function POST(request: Request) {
         </tfoot>
       </table>
 
+      ${alreadyHaveSection}
+
       <p style="font-size:12px;color:#8a7e6e;margin:16px 0 24px;">
         Prices checked at Walmart.com, Aug 2026. Based on full package costs.
       </p>
 
       <div style="text-align:center;margin:24px 0;">
-        <a href="${recipeUrl}" style="display:inline-block;background:#d4a574;color:#1a1714;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px;">
+        <a href="${recipeUrl}${multiplier > 1 ? `?batch=${multiplier}` : ""}" style="display:inline-block;background:#d4a574;color:#1a1714;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px;">
           View recipe &amp; start cooking
         </a>
       </div>
 
-      <p style="font-size:13px;color:#8a7e6e;text-align:center;margin:24px 0 0;">
+      <p style="font-size:13px;color:#8a7e6e;text-align:center;margin:16px 0 0;">
+        Need a different batch size? ${batchLinks}
+      </p>
+
+      <p style="font-size:13px;color:#8a7e6e;text-align:center;margin:12px 0 0;">
         Don't forget to check out the conversation starters on the recipe page — great questions to ask while you cook together.
       </p>
 

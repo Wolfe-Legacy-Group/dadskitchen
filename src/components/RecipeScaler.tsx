@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Ingredient } from "@/lib/recipes";
 
 const MULTIPLIERS = [1, 2, 3, 4] as const;
@@ -63,6 +63,12 @@ export function RecipeScaler({
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const batch = Number(params.get("batch"));
+    if (batch === 2 || batch === 3 || batch === 4) setMultiplier(batch);
+  }, []);
+
   const scaledServings = servings * multiplier;
   const scaledYield = yieldAmount ? yieldAmount * multiplier : null;
   const unit = yieldUnit ?? "pieces";
@@ -113,6 +119,10 @@ export function RecipeScaler({
         cost: (Number(i.estimated_cost_usd) * multiplier).toFixed(2),
       }));
 
+    const alreadyHave = ingredients
+      .filter((i) => checked[i.id])
+      .map((i) => `${getScaledQty(i)} ${i.unit} ${i.name}`);
+
     try {
       const res = await fetch("/api/send-shopping-list", {
         method: "POST",
@@ -122,6 +132,7 @@ export function RecipeScaler({
           recipeName,
           recipeSlug,
           items,
+          alreadyHave,
           totalCost: needCost.toFixed(2),
           multiplier,
         }),
