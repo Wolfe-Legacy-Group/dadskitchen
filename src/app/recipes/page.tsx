@@ -34,6 +34,7 @@ async function getRecipesWithCosts() {
         total_time_minutes: recipe.total_time_minutes,
         servings: recipe.servings,
         kid_age_range: recipe.kid_age_range,
+        meal_type: recipe.meal_type,
         total_cost,
       };
     })

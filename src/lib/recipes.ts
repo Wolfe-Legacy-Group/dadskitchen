@@ -17,6 +17,7 @@ export interface Recipe {
   image_url: string | null;
   yield_amount: number | null;
   yield_unit: string | null;
+  meal_type: "Breakfast" | "Lunch" | "Dinner" | "Snack";
 }
 
 export interface Ingredient {

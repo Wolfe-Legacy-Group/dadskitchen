@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 
+const MEAL_TYPES = ["All", "Breakfast", "Lunch", "Dinner", "Snack"] as const;
+
 interface RecipeCard {
   slug: string;
   title: string;
@@ -11,6 +13,7 @@ interface RecipeCard {
   total_time_minutes: number;
   servings: number;
   kid_age_range: string;
+  meal_type: string;
   total_cost: number;
 }
 
@@ -29,20 +32,38 @@ function DifficultyBadge({ difficulty }: { difficulty: string }) {
   );
 }
 
+function MealTypeBadge({ mealType }: { mealType: string }) {
+  const colors: Record<string, string> = {
+    Breakfast: "bg-amber-100 text-amber-700",
+    Lunch: "bg-blue-100 text-blue-700",
+    Dinner: "bg-purple-100 text-purple-700",
+    Snack: "bg-emerald-100 text-emerald-700",
+  };
+  return (
+    <span
+      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[mealType] ?? ""}`}
+    >
+      {mealType}
+    </span>
+  );
+}
+
 export function RecipeSearch({ recipes }: { recipes: RecipeCard[] }) {
   const [query, setQuery] = useState("");
+  const [mealFilter, setMealFilter] = useState("All");
 
-  const filtered = query
-    ? recipes.filter(
-        (r) =>
-          r.title.toLowerCase().includes(query.toLowerCase()) ||
-          r.description.toLowerCase().includes(query.toLowerCase())
-      )
-    : recipes;
+  const filtered = recipes.filter((r) => {
+    const matchesQuery =
+      !query ||
+      r.title.toLowerCase().includes(query.toLowerCase()) ||
+      r.description.toLowerCase().includes(query.toLowerCase());
+    const matchesMeal = mealFilter === "All" || r.meal_type === mealFilter;
+    return matchesQuery && matchesMeal;
+  });
 
   return (
     <>
-      <div className="mb-8">
+      <div className="mb-4">
         <input
           type="text"
           placeholder="Search recipes..."
@@ -52,12 +73,28 @@ export function RecipeSearch({ recipes }: { recipes: RecipeCard[] }) {
         />
       </div>
 
+      <div className="mb-8 flex flex-wrap gap-2">
+        {MEAL_TYPES.map((type) => (
+          <button
+            key={type}
+            onClick={() => setMealFilter(type)}
+            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+              mealFilter === type
+                ? "border-warm bg-warm/15 text-warm"
+                : "border-card-border bg-card-bg text-foreground-3 hover:text-foreground"
+            }`}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
       <div className="grid gap-6 sm:grid-cols-2">
         {filtered.length === 0 && (
           <p className="text-sm text-foreground-3 sm:col-span-2">
             {query
               ? <>No recipes matching &ldquo;{query}&rdquo;</>
-              : "No recipes yet. Check back soon!"}
+              : "No recipes found. Try a different filter."}
           </p>
         )}
         {filtered.map((recipe) => (
@@ -67,6 +104,7 @@ export function RecipeSearch({ recipes }: { recipes: RecipeCard[] }) {
             className="group block rounded-lg border border-card-border bg-card-bg p-6 transition-shadow hover:shadow-md"
           >
             <div className="flex items-center gap-2">
+              <MealTypeBadge mealType={recipe.meal_type} />
               <DifficultyBadge difficulty={recipe.difficulty} />
               <span className="text-xs text-foreground-3">
                 Ages {recipe.kid_age_range}
