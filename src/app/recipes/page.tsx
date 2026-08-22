@@ -53,7 +53,7 @@ export default async function Recipes() {
           Recipes
         </p>
         <h1 className="mt-4 font-serif text-4xl tracking-tight md:text-5xl">
-          Cook together
+          Let&apos;s cook together
         </h1>
         <p className="mt-4 max-w-lg text-foreground-2">
           Simple, kid-friendly recipes with real costs, storage tips, and
