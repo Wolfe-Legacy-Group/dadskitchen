@@ -4,10 +4,10 @@
   --background: #FFFFFF;
   --foreground: #1A1A1A;
   --foreground-2: #555555;
-  --foreground-3: #999999;
+  --foreground-3: #717171;
   --accent: #5E6E4B;
   --accent-dark: #4A5A3B;
-  --warm: #C17F3E;
+  --warm: #A06328;
   --surface: #F7F7F7;
   --rule: rgba(0, 0, 0, 0.1);
   --card-bg: #F9F9F9;
@@ -24,7 +24,7 @@
     --background: #1A1A1A;
     --foreground: #F0F0F0;
     --foreground-2: #AAAAAA;
-    --foreground-3: #777777;
+    --foreground-3: #9A9A9A;
     --accent: #7A8E64;
     --accent-dark: #8FA076;
     --warm: #D4944E;
