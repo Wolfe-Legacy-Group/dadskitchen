@@ -56,6 +56,8 @@ export default async function RecipePage({ params }: Props) {
         yieldAmount={recipe.yield_amount}
         yieldUnit={recipe.yield_unit}
         ingredients={recipe.ingredients}
+        recipeName={recipe.title}
+        recipeSlug={recipe.slug}
       />
 
       {/* Conversation starters */}
