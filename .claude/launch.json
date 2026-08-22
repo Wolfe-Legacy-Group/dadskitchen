@@ -5,7 +5,8 @@
       "name": "dadskitchen",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "/Users/cecilwolfe/Developer/dadskitchen"],
-      "port": 3000
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

@@ -25,8 +25,51 @@ export default async function RecipePage({ params }: Props) {
   const recipe = await getRecipeBySlug(slug);
   if (!recipe) notFound();
 
+  const totalCost = recipe.ingredients.reduce(
+    (sum, i) => sum + Number(i.estimated_cost_usd),
+    0
+  );
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    name: recipe.title,
+    description: recipe.description,
+    url: `https://dadskitchen.org/recipes/${recipe.slug}`,
+    ...(recipe.image_url ? { image: recipe.image_url } : {}),
+    author: {
+      "@type": "Organization",
+      name: "Dad's Kitchen — Mens Philanthropy Foundation",
+      url: "https://dadskitchen.org",
+    },
+    prepTime: `PT${recipe.prep_time_minutes}M`,
+    cookTime: `PT${recipe.cook_time_minutes}M`,
+    totalTime: `PT${recipe.total_time_minutes}M`,
+    recipeYield: recipe.yield_amount
+      ? `${recipe.yield_amount} ${recipe.yield_unit}`
+      : `${recipe.servings} servings`,
+    recipeCategory: recipe.meal_type,
+    recipeIngredient: recipe.ingredients.map(
+      (i) => `${i.quantity} ${i.unit} ${i.name}`.trim()
+    ),
+    recipeInstructions: recipe.steps.map((s) => ({
+      "@type": "HowToStep",
+      position: s.step_number,
+      text: s.instruction,
+    })),
+    estimatedCost: {
+      "@type": "MonetaryAmount",
+      currency: "USD",
+      value: totalCost.toFixed(2),
+    },
+  };
+
   return (
     <article className="mx-auto max-w-3xl px-6 pb-16 pt-16 md:pt-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link
         href="/recipes"
         className="text-sm text-foreground-3 hover:text-foreground"
