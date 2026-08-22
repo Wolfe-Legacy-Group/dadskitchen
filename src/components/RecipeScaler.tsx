@@ -247,24 +247,40 @@ export function RecipeScaler({
       </div>
 
       {/* Tab bar */}
-      <div className="mt-8 flex gap-1 overflow-x-auto border-b border-card-border">
-        {visibleTabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-              activeTab === tab.key
-                ? "border-warm text-warm"
-                : "border-transparent text-foreground-3 hover:text-foreground"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="relative mt-8">
+        <div
+          role="tablist"
+          aria-label="Recipe sections"
+          className="flex gap-1 overflow-x-auto border-b border-card-border scrollbar-hide"
+        >
+          {visibleTabs.map((tab) => (
+            <button
+              key={tab.key}
+              role="tab"
+              id={`tab-${tab.key}`}
+              aria-selected={activeTab === tab.key}
+              aria-controls={`panel-${tab.key}`}
+              onClick={() => setActiveTab(tab.key)}
+              className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                activeTab === tab.key
+                  ? "border-warm text-warm"
+                  : "border-transparent text-foreground-3 hover:text-foreground"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-background to-transparent md:hidden" />
       </div>
 
       {/* Tab content */}
-      <div className="mt-6">
+      <div
+        role="tabpanel"
+        id={`panel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+        className="mt-6"
+      >
         {activeTab === "convos" && (
           <div className="space-y-8">
             {cookingStarters.length > 0 && (
@@ -381,9 +397,6 @@ export function RecipeScaler({
                               </p>
                               <p className="text-foreground-2">
                                 {ing.prep_required}
-                                {ing.prep_time_minutes
-                                  ? ` (~${ing.prep_time_minutes} min)`
-                                  : ""}
                               </p>
                             </div>
                             <div>
