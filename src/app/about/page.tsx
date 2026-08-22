@@ -70,6 +70,15 @@ export default function About() {
               conversation starters that go deeper than &ldquo;how was
               school,&rdquo; and see other dads doing the same thing.
             </p>
+            <p>
+              <Link
+                href="/about/transparency"
+                className="text-sm font-medium text-accent-dark hover:text-foreground"
+              >
+                Read about our governance, policies, and how we use funds
+                &rarr;
+              </Link>
+            </p>
           </div>
         </div>
       </section>

@@ -42,6 +42,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
     {
+      url: "https://dadskitchen.org/about/transparency",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: "https://dadskitchen.org/process/spread-the-word",
       changeFrequency: "monthly",
       priority: 0.5,

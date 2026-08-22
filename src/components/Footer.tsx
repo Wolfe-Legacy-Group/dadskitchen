@@ -29,6 +29,7 @@ export function Footer() {
             <Link href="/blog" className="text-sm text-white/60 hover:text-nav-link-hover">Blog</Link>
             <Link href="/get-involved" className="text-sm text-white/60 hover:text-nav-link-hover">Get Involved</Link>
             <Link href="/contact" className="text-sm text-white/60 hover:text-nav-link-hover">Contact</Link>
+            <Link href="/about/transparency" className="text-sm text-white/60 hover:text-nav-link-hover">Transparency</Link>
           </nav>
         </div>
 
