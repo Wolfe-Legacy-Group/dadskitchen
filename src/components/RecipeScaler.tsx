@@ -16,6 +16,7 @@ const TABS = [
   { key: "steps", label: "Steps" },
   { key: "substitutions", label: "Substitutions" },
   { key: "storage", label: "Storage" },
+  { key: "video", label: "Video" },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -565,6 +566,32 @@ export function RecipeScaler({
             <h2 className="font-serif text-2xl text-foreground">Leftovers</h2>
             <p className="mt-3 text-sm leading-relaxed text-foreground-2">
               {leftoverTips}
+            </p>
+          </section>
+        )}
+
+        {activeTab === "video" && (
+          <section className="flex flex-col items-center py-8">
+            <div className="flex h-48 w-full max-w-md items-center justify-center rounded-lg border-2 border-dashed border-card-border bg-card-bg">
+              <svg
+                className="h-16 w-16 text-foreground-3/40"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+                />
+              </svg>
+            </div>
+            <p className="mt-4 font-serif text-lg text-foreground-3">
+              Coming soon
+            </p>
+            <p className="mt-1 text-sm text-foreground-3/70">
+              A step-by-step cooking video for this recipe is on the way.
             </p>
           </section>
         )}
