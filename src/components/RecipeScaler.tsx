@@ -13,6 +13,7 @@ const MULTIPLIERS = [1, 2, 3, 4] as const;
 const TABS = [
   { key: "convos", label: "Cooking Convos" },
   { key: "ingredients", label: "Ingredients" },
+  { key: "shopping", label: "Shopping List" },
   { key: "steps", label: "Steps" },
   { key: "substitutions", label: "Substitutions" },
   { key: "storage", label: "Storage" },
@@ -402,30 +403,84 @@ export function RecipeScaler({
               })}
             </div>
 
-            {/* Shopping list summary bar */}
-            <div className="mt-6 rounded-lg border border-warm/30 bg-warm/5 p-4">
+          </section>
+        )}
+
+        {activeTab === "shopping" && (
+          <section>
+            <h2 className="font-serif text-2xl text-foreground">
+              Shopping List
+            </h2>
+            <p className="mt-1 text-sm text-foreground-3">
+              Check off what you already have at home.
+            </p>
+
+            <div className="mt-5 space-y-2">
+              {ingredients.map((ing) => {
+                const isChecked = !!checked[ing.id];
+                const scaledQty = getScaledQty(ing);
+                const scaledCost = Number(ing.estimated_cost_usd) * multiplier;
+
+                return (
+                  <div
+                    key={ing.id}
+                    onClick={() => toggleCheck(ing.id)}
+                    className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all ${
+                      isChecked
+                        ? "border-accent/30 bg-accent/5 opacity-60"
+                        : "border-card-border bg-card-bg"
+                    }`}
+                  >
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs transition-colors ${
+                        isChecked
+                          ? "border-accent bg-accent text-white"
+                          : "border-foreground-3/30"
+                      }`}
+                    >
+                      {isChecked && "✓"}
+                    </span>
+                    <span
+                      className={`flex-1 text-sm ${
+                        isChecked
+                          ? "text-foreground-3 line-through"
+                          : "text-foreground"
+                      }`}
+                    >
+                      {scaledQty} {ing.unit} {ing.name}
+                    </span>
+                    <span className="shrink-0 text-sm font-medium text-warm">
+                      ~${scaledCost.toFixed(2)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 rounded-lg border border-warm/30 bg-warm/5 p-5">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-lg font-bold text-foreground">
                     {needCount === 0
                       ? "You have everything!"
-                      : `${needCount} item${needCount !== 1 ? "s" : ""} still needed`}
+                      : `${needCount} item${needCount !== 1 ? "s" : ""} to buy`}
                   </p>
                   {needCount > 0 && (
-                    <p className="text-xs text-foreground-3">
-                      ~${needCost.toFixed(2)} estimated
+                    <p className="text-sm text-foreground-3">
+                      ~${needCost.toFixed(2)} estimated total
                     </p>
                   )}
                 </div>
-                {needCount > 0 && !emailForm && (
-                  <button
-                    onClick={() => setEmailForm(true)}
-                    className="rounded-md border border-warm bg-warm/15 px-4 py-2 text-sm font-medium text-warm transition-colors hover:bg-warm/25"
-                  >
-                    Email my shopping list
-                  </button>
-                )}
               </div>
+
+              {needCount > 0 && !emailForm && !sent && (
+                <button
+                  onClick={() => setEmailForm(true)}
+                  className="mt-4 w-full rounded-md bg-warm px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                >
+                  Email me this shopping list
+                </button>
+              )}
 
               {emailForm && !sent && (
                 <form onSubmit={handleSendEmail} className="mt-4 flex gap-2">
