@@ -1,31 +1,44 @@
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+
+export const revalidate = 60;
 
 const videos = [
   {
     title: "Pancakes with Dad",
     ages: "Ages 4–6",
     duration: "4 min",
-    color: "from-herb to-herb-dark" as const,
     bg: "bg-herb/80",
   },
   {
     title: "Taco Tuesday",
     ages: "Ages 7–10",
     duration: "6 min",
-    color: "from-copper to-copper/70" as const,
     bg: "bg-copper/80",
   },
   {
     title: "The Sunday Roast",
     ages: "Ages 11–14",
     duration: "8 min",
-    color: "from-smoke to-smoke/60" as const,
     bg: "bg-smoke/80",
   },
 ];
 
-export default function Home() {
+async function getLatestRecipes() {
+  const { data: recipes } = await supabase
+    .from("recipes")
+    .select("slug, title, description, difficulty, total_time_minutes, kid_age_range, meal_type")
+    .eq("published", true)
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  return recipes ?? [];
+}
+
+export default async function Home() {
+  const latestRecipes = await getLatestRecipes();
+
   return (
     <>
       {/* Hero */}
@@ -65,6 +78,57 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Latest recipes */}
+      {latestRecipes.length > 0 && (
+        <section className="border-t border-rule">
+          <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+              Latest recipes
+            </p>
+            <h2 className="mt-4 font-serif text-2xl md:text-3xl">
+              Fresh out of the kitchen
+            </h2>
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {latestRecipes.map((recipe) => (
+                <Link
+                  key={recipe.slug}
+                  href={`/recipes/${recipe.slug}`}
+                  className="group flex flex-col rounded-lg border border-card-border bg-card-bg p-5 transition-shadow hover:shadow-md"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent">
+                      {recipe.meal_type}
+                    </span>
+                    <span className="rounded-full bg-warm/10 px-2.5 py-0.5 text-xs font-semibold text-warm">
+                      {recipe.difficulty}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-serif text-lg">{recipe.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground-2 line-clamp-2">
+                    {recipe.description}
+                  </p>
+                  <p className="mt-3 text-xs text-foreground-3">
+                    {recipe.total_time_minutes} min &middot; Ages{" "}
+                    {recipe.kid_age_range}
+                  </p>
+                  <span className="mt-4 text-sm font-medium text-accent-dark group-hover:text-foreground">
+                    View recipe &rarr;
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8">
+              <Link
+                href="/recipes"
+                className="text-sm font-medium text-accent-dark hover:text-foreground"
+              >
+                See all recipes &rarr;
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Our process */}
       <section className="border-t border-rule">

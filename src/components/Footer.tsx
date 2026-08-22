@@ -23,8 +23,8 @@ export function Footer() {
           </p>
           <nav className="mt-3 flex flex-col gap-2">
             <Link href="/about" className="text-sm text-white/60 hover:text-nav-link-hover">About</Link>
-            <Link href="/watch" className="text-sm text-white/60 hover:text-nav-link-hover">Watch</Link>
             <Link href="/recipes" className="text-sm text-white/60 hover:text-nav-link-hover">Recipes</Link>
+            <Link href="/watch" className="text-sm text-white/60 hover:text-nav-link-hover">Watch</Link>
             <Link href="/resources" className="text-sm text-white/60 hover:text-nav-link-hover">Resources</Link>
             <Link href="/blog" className="text-sm text-white/60 hover:text-nav-link-hover">Blog</Link>
             <Link href="/get-involved" className="text-sm text-white/60 hover:text-nav-link-hover">Get Involved</Link>
