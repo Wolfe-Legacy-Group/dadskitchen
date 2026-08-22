@@ -53,37 +53,47 @@ export default async function RecipePage({ params }: Props) {
         <Badge label="Cook" value={`${recipe.cook_time_minutes} min`} />
         <Badge label="Total" value={`${recipe.total_time_minutes} min`} />
         <Badge label="Servings" value={String(recipe.servings)} />
-        {recipe.yield_amount && (
-          <>
-            <Badge label="Per Serving" value={String(Math.round(recipe.yield_amount / recipe.servings))} />
-            <Badge label={`Total ${recipe.yield_unit ?? "pieces"}`} value={String(recipe.yield_amount)} />
-          </>
-        )}
+        {recipe.yield_amount && (() => {
+          const unit = recipe.yield_unit ?? "pieces";
+          const perServing = Math.round(recipe.yield_amount / recipe.servings);
+          const singularUnit = unit.endsWith("es") && unit !== "pancakes"
+            ? unit.slice(0, -2)
+            : unit.endsWith("s")
+              ? unit.slice(0, -1)
+              : unit;
+          const displayUnit = perServing === 1 ? singularUnit : unit;
+          return (
+            <>
+              <Badge label="1 Serving" value={`${perServing} ${displayUnit}`} />
+              <Badge label={`Total ${unit}`} value={String(recipe.yield_amount)} />
+            </>
+          );
+        })()}
         <Badge label="Ages" value={recipe.kid_age_range} />
       </div>
 
       {/* Cost summary */}
       <div className="mt-8 rounded-lg border border-card-border bg-card-bg p-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-foreground-3">
-          Estimated cost
+          Estimated cost (Walmart.com, Aug 2026)
         </p>
         <div className="mt-2 flex gap-8">
           <div>
             <p className="text-2xl font-bold text-foreground">
-              ${totalCost.toFixed(2)}
+              ~${totalCost.toFixed(2)}
             </p>
             <p className="text-xs text-foreground-3">total recipe</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground">
-              ${costPerServing.toFixed(2)}
+              ~${costPerServing.toFixed(2)}
             </p>
             <p className="text-xs text-foreground-3">per serving</p>
           </div>
         </div>
         <p className="mt-3 text-xs text-foreground-3">
-          Based on full package prices at Walmart. You may already have some of
-          these ingredients on hand.
+          Prices checked at Walmart.com on Aug 2026. Based on full package costs
+          — you may already have some of these ingredients on hand.
         </p>
       </div>
 
@@ -104,7 +114,7 @@ export default async function RecipePage({ params }: Props) {
                   {ing.quantity} {ing.unit} {ing.name}
                 </p>
                 <p className="shrink-0 text-sm font-medium text-warm">
-                  ${Number(ing.estimated_cost_usd).toFixed(2)}
+                  ~${Number(ing.estimated_cost_usd).toFixed(2)}
                 </p>
               </div>
               {ing.cost_note && (
