@@ -28,7 +28,7 @@ export default function GetInvolved() {
       <section className="mx-auto max-w-3xl px-6 pb-16">
         <div className="space-y-8">
 
-          {/* Donate */}
+          {/* Support */}
           <div
             id="donate"
             className="scroll-mt-24 rounded-lg border border-card-border bg-card-bg p-6 md:p-8"
@@ -36,21 +36,23 @@ export default function GetInvolved() {
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-warm">
               Support
             </p>
-            <h2 className="mt-2 font-serif text-2xl">Donate</h2>
+            <h2 className="mt-2 font-serif text-2xl">Support the foundation</h2>
             <p className="mt-3 leading-relaxed text-foreground-2">
               The Mens Philanthropy Foundation is a 501(c)(3) nonprofit. Your
-              tax-deductible donation helps us produce more videos, build
+              tax-deductible support helps us produce more videos, build
               resources for dads, and reach families who need this.
             </p>
-            <p className="mt-4 text-sm text-foreground-3">
-              Donation infrastructure coming soon. In the meantime, reach out
-              directly to discuss how you can support the foundation.
+            <p className="mt-3 leading-relaxed text-foreground-2">
+              We&rsquo;re building our online donation platform now. In the
+              meantime, we&rsquo;d love to hear from you — whether you want
+              to contribute financially, volunteer your time, or partner with
+              us in another way.
             </p>
             <Link
               href="/contact"
               className="mt-4 inline-block rounded bg-warm px-6 py-3 text-sm font-semibold text-btn-text transition-opacity hover:opacity-90"
             >
-              Contact us to donate
+              Get in touch
             </Link>
           </div>
 

@@ -133,6 +133,43 @@ export default function GuestChef() {
           </ul>
         </div>
 
+        <div className="mt-12 rounded-lg border border-card-border bg-card-bg p-6 md:p-8">
+          <h2 className="font-serif text-xl">Child &amp; family media policy</h2>
+          <p className="mt-3 leading-relaxed text-foreground-2">
+            Dad&rsquo;s Kitchen features children. We take that seriously.
+            Before any submitted footage is published, every participating
+            family must complete the following:
+          </p>
+          <ul className="mt-4 space-y-3">
+            {[
+              "Parent or legal guardian media release — a signed form authorizing the use of your child's likeness in Dad's Kitchen content across our website, YouTube, Instagram, and TikTok.",
+              "Child assent — for children old enough to understand (generally age 7+), we ask that you explain what the video is for and confirm they are comfortable participating.",
+              "Identifying information — only first names and ages are published. Last names, school names, locations, and other identifying details are never shared.",
+              "Footage transfer and storage — videos are submitted via a secure upload link. Raw footage is stored on encrypted, access-controlled infrastructure and is never sold or shared with third parties.",
+              "Editing and approval — you will review the final edit before publication. Nothing goes live without your written approval.",
+              "Takedown and withdrawal — you can request removal of your family's content at any time by emailing us. We will remove the video from all platforms we control within 7 business days.",
+              "Comments and moderation — comments are moderated on all platforms. Any comment directed at a child is removed immediately.",
+              "Retention — if you withdraw consent, raw footage is deleted within 30 days of your request. Published content is removed per the takedown policy above.",
+            ].map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 text-sm text-foreground-2"
+              >
+                <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 rounded-full bg-warm/40" />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-sm text-foreground-3">
+            The full media release form will be provided when you begin the
+            guest chef process. If you have questions about our policies,{" "}
+            <Link href="/contact" className="text-warm hover:text-foreground">
+              contact us
+            </Link>
+            .
+          </p>
+        </div>
+
         <div className="mt-8">
           <Link
             href="/contact"

@@ -37,7 +37,7 @@ export function Nav() {
             href="/get-involved#donate"
             className="rounded bg-warm px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Donate
+            Support Us
           </Link>
         </div>
 
@@ -77,7 +77,7 @@ export function Nav() {
             onClick={() => setOpen(false)}
             className="mt-2 block rounded bg-warm px-4 py-2.5 text-center text-sm font-semibold text-white"
           >
-            Donate
+            Support Us
           </Link>
         </div>
       )}

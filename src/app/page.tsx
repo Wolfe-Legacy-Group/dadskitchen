@@ -36,12 +36,33 @@ export default function Home() {
           </p>
           <Image
             src="/logo-tagline.png"
-            alt="Dad's Kitchen — Helping dads and kids cook side by side and talk face to face"
+            alt="Dad's Kitchen logo"
             width={420}
             height={420}
-            className="mt-8 w-full max-w-sm md:max-w-md"
+            className="mt-8 w-full max-w-[280px] md:max-w-xs"
             priority
           />
+          <h1 className="mt-8 font-serif text-4xl tracking-tight md:text-5xl">
+            Cook side by side. Talk face to face.
+          </h1>
+          <p className="mx-auto mt-4 max-w-md text-lg text-foreground-2">
+            Simple recipes, real conversations, and everything you need to make
+            the kitchen the best part of your day with your kids.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/recipes"
+              className="rounded bg-warm px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              Choose your first recipe
+            </Link>
+            <Link
+              href="/about"
+              className="rounded border border-rule px-6 py-3 text-sm font-medium text-foreground-2 transition-colors hover:text-foreground"
+            >
+              Our story
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -118,7 +139,10 @@ export default function Home() {
       {/* Featured videos */}
       <section className="border-t border-rule">
         <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
-          <h2 className="font-serif text-2xl">Latest from the kitchen</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+            In production
+          </p>
+          <h2 className="mt-4 font-serif text-2xl">What we&rsquo;re filming</h2>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {videos.map((v) => (
               <article
