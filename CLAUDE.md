@@ -30,7 +30,10 @@ Per `../chaise/system/operating-model.md` § Tier rubric:
 - Environments: preview + prod
 - Board manages the queue, merges, and verifies
 - Agent complement: 1
-- No Chaise instance on this project. Board absorbs architect duties at this tier.
+- Sys: `DK - Sys`. Every project carries a Sys at every tier (Operator ruling
+  2026-08-26). Sys holds project canon, architecture, and the reasons behind
+  decisions; Board runs throughput. Tier governs the Agent complement and the
+  workflow pipeline, not whether the project has an architect.
 
 ## Workflow States
 
