@@ -2,7 +2,14 @@
 
 # DadsKitchen - Agent Routing Guide
 
-Linear team **DadsKitchen (DK)** · Repo `Wolfe-Legacy-Group/dadskitchen` · **Tier 2 - Split**
+Linear team **Mens Philanthropy Foundation (MPF)**, project **Dad's Kitchen** · Repo `Wolfe-Legacy-Group/dadskitchen` · **Tier 2 - Split**
+
+Dad's Kitchen is the first initiative of the Mens Philanthropy Foundation, its 501(c)(3) parent.
+Since 2026-10-21 (Operator) its cards live in the MPF Linear team, in the **Dad's Kitchen** project,
+and one MPF crew works both this repo and `Wolfe-Legacy-Group/mpf` (`../mpf/`). Cards that were
+`DK-N` are now `MPF-N` with the same number; old links redirect. Read `../mpf/CLAUDE.md` for the
+foundation-level setup and `../mpf/docs/canon/README.md` for which site owns transparency and
+donations.
 
 ## Governance Lives in the chaise Repo
 
@@ -29,9 +36,9 @@ Per `../chaise/system/operating-model.md` § Tier rubric:
 
 - Environments: preview + prod (Vercel previews; no staging)
 - Board manages the queue, merges, and verifies
-- Devs: 1 (`DK - Dev`)
+- Devs: 1 (`MPF - Dev`, shared with the MPF site)
 - Walker: none. A Tier 2 project needs staging and the `In Review` / `Verifying` states before
-  the Operator can promote one (`../chaise/templates/new-project.md` § 1); DK has neither, so
+  the Operator can promote one (`../chaise/templates/new-project.md` § 1); this site has neither, so
   Board keeps verifying.
 
 Every project carries a **Lead** and a **Board**, at every tier (Operator ruling 2026-08-26).
@@ -41,17 +48,17 @@ runs throughput.
 
 ## Sessions
 
-Every session is titled `DK - {Role}`: `DK - Lead`, `DK - Board`, `DK - Dev` - the role only,
-never a step. The activation prompt opens `You are DK - {Role}.` and gives the agent's Position.
-DK has no sprints, so the positions are Standing
+Every session is titled `MPF - {Role}`: `MPF - Lead`, `MPF - Board`, `MPF - Dev` - the role only,
+never a step. The former `DK - {Role}` sessions are retired. The activation prompt opens
+`You are MPF - {Role}.` and gives the agent's Position. MPF has no sprints, so the positions are Standing
 (`../chaise/system/agent-activation-protocol.md` § Projects without sprints):
 
 - `Position: Lead · Standing`
-- `Position: Board · Standing` or `Board · Standing · DK-NNNN`
-- `Position: Dev · Standing · DK-NNNN`
+- `Position: Board · Standing` or `Board · Standing · MPF-NNNN`
+- `Position: Dev · Standing · MPF-NNNN`
 
 The agent checks that position against its playbook and the actual state, begins every report
-and Linear post with `Position: ...`, and keeps its row in `DK Active Agent Sessions` current.
+and Linear post with `Position: ...`, and keeps its row in `MPF Active Agent Sessions` current.
 
 Standing sessions run on the portfolio's always-on parent machine, and are addressed by
 session id (`../chaise/system/operating-model.md` § Session topology).
@@ -69,7 +76,7 @@ check, and no `PROOF: PENDING` is open.
 | -- | -- |
 | Role definitions, operating model, action gates | Product domain knowledge and Internal Logic |
 | Card taxonomy, Linear conventions | Stack, architecture, and deployment specifics |
-| Release governance, verification doctrine | Anything true only of DadsKitchen |
+| Release governance, verification doctrine | Anything true only of Dad's Kitchen |
 
 Changes to anything in the left column are made in the `chaise` repo, in the Chaise lane, under
 Operator authorization - never here.
