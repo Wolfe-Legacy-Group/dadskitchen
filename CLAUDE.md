@@ -27,20 +27,41 @@ into this repo - reference them by path.
 
 Per `../chaise/system/operating-model.md` § Tier rubric:
 
-- Environments: preview + prod
+- Environments: preview + prod (Vercel previews; no staging)
 - Board manages the queue, merges, and verifies
-- Agent complement: 1
-- Sys: `DK - Sys`. Every project carries a Sys at every tier (Operator ruling
-  2026-08-26). Sys holds project canon, architecture, and the reasons behind
-  decisions; Board runs throughput. Tier governs the Agent complement and the
-  workflow pipeline, not whether the project has an architect.
+- Devs: 1 (`DK - Dev`)
+- Walker: none. A Tier 2 project needs staging and the `In Review` / `Verifying` states before
+  the Operator can promote one (`../chaise/templates/new-project.md` § 1); DK has neither, so
+  Board keeps verifying.
+
+Every project carries a **Lead** and a **Board**, at every tier (Operator ruling 2026-08-26).
+Tier determines the Dev complement and the workflow pipeline - not whether the project has
+an architect. Lead holds project canon, architecture, and the reasons behind decisions; Board
+runs throughput.
+
+## Sessions
+
+Every session is titled `DK - {Role}`: `DK - Lead`, `DK - Board`, `DK - Dev` - the role only,
+never a step. The activation prompt opens `You are DK - {Role}.` and gives the agent's Position.
+DK has no sprints, so the positions are Standing
+(`../chaise/system/agent-activation-protocol.md` § Projects without sprints):
+
+- `Position: Lead · Standing`
+- `Position: Board · Standing` or `Board · Standing · DK-NNNN`
+- `Position: Dev · Standing · DK-NNNN`
+
+The agent checks that position against its playbook and the actual state, begins every report
+and Linear post with `Position: ...`, and keeps its row in `DK Active Agent Sessions` current.
+
+Standing sessions run on the portfolio's always-on parent machine, and are addressed by
+session id (`../chaise/system/operating-model.md` § Session topology).
 
 ## Workflow States
 
-`Backlog -> Todo -> In Progress -> Done` (Linear defaults for Tier 1-2).
-
-This project does **not** run the Tier 3 pipeline - no Grooming, Sprint Ready, Verifying,
-sprint ceremonies, or dispatch convention. Do not apply ARC's process here.
+`Backlog -> Todo -> In Progress -> Done` (Linear defaults for Tier 1-2). No Grooming, Sprint
+Ready, Verifying, sprint ceremonies, or dispatch convention. Do not apply ARC's process here.
+Board sets a card Done once the change is live on production, its latest merge has a passing
+check, and no `PROOF: PENDING` is open.
 
 ## What Belongs Where
 
@@ -52,3 +73,12 @@ sprint ceremonies, or dispatch convention. Do not apply ARC's process here.
 
 Changes to anything in the left column are made in the `chaise` repo, in the Chaise lane, under
 Operator authorization - never here.
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
