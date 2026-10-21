@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getRecipeBySlug } from "@/lib/recipes";
-import { RecipeScaler } from "@/components/RecipeScaler";
+import { getAllRecipes, getRecipeBySlug } from "@/lib/recipes";
+import { Suspense } from "react";
+import { RecipeScaler, RecipeScalerFallback } from "@/components/RecipeScaler";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export const revalidate = 60;
+
+// Prerender every published recipe so the route is ISR, not rendered per
+// request. dynamicParams stays true: a recipe published after the build
+// renders on its first request and is then cached.
+export async function generateStaticParams() {
+  const recipes = await getAllRecipes();
+  return recipes.map((recipe) => ({ slug: recipe.slug }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -104,19 +113,37 @@ export default async function RecipePage({ params }: Props) {
       </div>
 
       {/* Everything interactive: batch toggle, cost, tabs */}
-      <RecipeScaler
-        servings={recipe.servings}
-        yieldAmount={recipe.yield_amount}
-        yieldUnit={recipe.yield_unit}
-        ingredients={recipe.ingredients}
-        recipeName={recipe.title}
-        recipeSlug={recipe.slug}
-        steps={recipe.steps}
-        substitutions={recipe.substitutions}
-        conversationStarters={recipe.conversationStarters}
-        safetyNotes={recipe.safety_notes}
-        leftoverTips={recipe.leftover_tips}
-      />
+      <Suspense
+        fallback={
+          <RecipeScalerFallback
+            servings={recipe.servings}
+            yieldAmount={recipe.yield_amount}
+            yieldUnit={recipe.yield_unit}
+            ingredients={recipe.ingredients}
+            recipeName={recipe.title}
+            recipeSlug={recipe.slug}
+            steps={recipe.steps}
+            substitutions={recipe.substitutions}
+            conversationStarters={recipe.conversationStarters}
+            safetyNotes={recipe.safety_notes}
+            leftoverTips={recipe.leftover_tips}
+          />
+        }
+      >
+        <RecipeScaler
+          servings={recipe.servings}
+          yieldAmount={recipe.yield_amount}
+          yieldUnit={recipe.yield_unit}
+          ingredients={recipe.ingredients}
+          recipeName={recipe.title}
+          recipeSlug={recipe.slug}
+          steps={recipe.steps}
+          substitutions={recipe.substitutions}
+          conversationStarters={recipe.conversationStarters}
+          safetyNotes={recipe.safety_notes}
+          leftoverTips={recipe.leftover_tips}
+        />
+      </Suspense>
     </article>
   );
 }

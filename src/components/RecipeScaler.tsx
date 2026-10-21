@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type {
   Ingredient,
   Step,
@@ -70,7 +71,28 @@ interface RecipeScalerProps {
   leftoverTips: string;
 }
 
-export function RecipeScaler({
+// ?batch=2|3|4 opens the recipe at that size; anything else means 1x.
+function parseBatch(value: string | null): number | null {
+  const batch = Number(value);
+  return batch === 2 || batch === 3 || batch === 4 ? batch : null;
+}
+
+// Reads ?batch= from the URL. useSearchParams makes this client-rendered up
+// to the nearest Suspense boundary, so the page wraps it in one whose
+// fallback is RecipeScalerFallback (the same scaler at 1x).
+export function RecipeScaler(props: RecipeScalerProps) {
+  const searchParams = useSearchParams();
+  return (
+    <RecipeScalerView {...props} urlBatch={parseBatch(searchParams.get("batch"))} />
+  );
+}
+
+// The scaler at 1x without reading the URL, for prerendered HTML.
+export function RecipeScalerFallback(props: RecipeScalerProps) {
+  return <RecipeScalerView {...props} urlBatch={null} />;
+}
+
+function RecipeScalerView({
   servings,
   yieldAmount,
   yieldUnit,
@@ -81,8 +103,11 @@ export function RecipeScaler({
   conversationStarters,
   safetyNotes,
   leftoverTips,
-}: RecipeScalerProps) {
-  const [multiplier, setMultiplier] = useState(1);
+  urlBatch,
+}: RecipeScalerProps & { urlBatch: number | null }) {
+  // The URL sets the starting size; a batch button click overrides it.
+  const [userChoice, setUserChoice] = useState<number | null>(null);
+  const multiplier = userChoice ?? urlBatch ?? 1;
   const [activeTab, setActiveTab] = useState<TabKey>("ingredients");
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [emailForm, setEmailForm] = useState(false);
@@ -91,13 +116,6 @@ export function RecipeScaler({
   const [sent, setSent] = useState(false);
   const [cookingIdx, setCookingIdx] = useState(0);
   const [tableIdx, setTableIdx] = useState(0);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const batch = Number(params.get("batch"));
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads ?batch= once after hydration
-    if (batch === 2 || batch === 3 || batch === 4) setMultiplier(batch);
-  }, []);
 
   const scaledServings = servings * multiplier;
   const scaledYield = yieldAmount ? yieldAmount * multiplier : null;
@@ -217,7 +235,7 @@ export function RecipeScaler({
           {MULTIPLIERS.map((m) => (
             <button
               key={m}
-              onClick={() => setMultiplier(m)}
+              onClick={() => setUserChoice(m)}
               className={`rounded-md border px-4 py-2 text-sm font-medium transition-colors ${
                 multiplier === m
                   ? "border-warm bg-warm/15 text-warm"
