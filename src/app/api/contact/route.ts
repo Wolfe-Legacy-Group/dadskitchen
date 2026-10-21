@@ -1,10 +1,44 @@
 import { NextResponse } from "next/server";
+import { escapeHtml } from "@/lib/escape-html";
 
 interface RequestBody {
   name: string;
   email: string;
   subject: string;
   message: string;
+}
+
+const NAME_MAX = 100;
+const SUBJECT_MAX = 200;
+const MESSAGE_MAX = 5000;
+const EMAIL_MAX = 254;
+const EMAIL_PATTERN = /^[^\s@<>()",;:\\]+@[^\s@<>()",;:\\]+\.[^\s@<>()",;:\\]+$/;
+
+// Per-instance limit; resets on cold start. Durable limiting is a follow-up.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const sendsByIp = new Map<string, number[]>();
+
+function clientIp(request: Request): string {
+  return (
+    request.headers.get("x-real-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown"
+  );
+}
+
+function recentSends(ip: string, now: number): number[] {
+  if (sendsByIp.size > 1000) {
+    for (const [key, times] of sendsByIp) {
+      if (times.every((t) => now - t >= RATE_WINDOW_MS)) sendsByIp.delete(key);
+    }
+  }
+  return (sendsByIp.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+}
+
+// Collapses CR/LF so a value can't add lines to a mail header.
+function singleLine(value: string): string {
+  return value.replace(/[\r\n]+/g, " ").trim();
 }
 
 export async function POST(request: Request) {
@@ -16,15 +50,48 @@ export async function POST(request: Request) {
     );
   }
 
-  const body: RequestBody = await request.json();
-  const { name, email, subject, message } = body;
+  let body: Partial<RequestBody>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
 
-  if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
+  const name = typeof body?.name === "string" ? singleLine(body.name) : "";
+  const email = typeof body?.email === "string" ? body.email.trim() : "";
+  const subject = typeof body?.subject === "string" ? singleLine(body.subject) : "";
+  const message = typeof body?.message === "string" ? body.message.trim() : "";
+
+  if (!name || !email || !subject || !message) {
     return NextResponse.json(
       { error: "All fields are required" },
       { status: 400 }
     );
   }
+
+  if (
+    name.length > NAME_MAX ||
+    subject.length > SUBJECT_MAX ||
+    message.length > MESSAGE_MAX ||
+    email.length > EMAIL_MAX ||
+    !EMAIL_PATTERN.test(email)
+  ) {
+    return NextResponse.json(
+      { error: "Please check your entries and try again" },
+      { status: 400 }
+    );
+  }
+
+  const ip = clientIp(request);
+  const now = Date.now();
+  const sends = recentSends(ip, now);
+  if (sends.length >= RATE_LIMIT) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+  sendsByIp.set(ip, [...sends, now]);
 
   const notifyEmail =
     process.env.CONTACT_NOTIFY_EMAIL ?? "perry@wolfelegacies.com";
@@ -37,19 +104,19 @@ export async function POST(request: Request) {
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         <tr>
           <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;font-weight:bold;color:#8a7e6e;width:100px;">Name</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;">${name.trim()}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;">${escapeHtml(name)}</td>
         </tr>
         <tr>
           <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;font-weight:bold;color:#8a7e6e;">Email</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;"><a href="mailto:${email.trim()}" style="color:#b8834a;">${email.trim()}</a></td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;"><a href="mailto:${escapeHtml(email)}" style="color:#b8834a;">${escapeHtml(email)}</a></td>
         </tr>
         <tr>
           <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;font-weight:bold;color:#8a7e6e;">Subject</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;">${subject.trim()}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;">${escapeHtml(subject)}</td>
         </tr>
         <tr>
           <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;font-weight:bold;color:#8a7e6e;vertical-align:top;">Message</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;white-space:pre-wrap;">${message.trim()}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #e0d6c8;white-space:pre-wrap;">${escapeHtml(message)}</td>
         </tr>
       </table>
     </div>
@@ -64,8 +131,8 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       from: "Dad's Kitchen <noreply@dadskitchen.org>",
       to: notifyEmail,
-      replyTo: email.trim(),
-      subject: `[Dad's Kitchen] ${subject.trim()} — ${name.trim()}`,
+      replyTo: email,
+      subject: `[Dad's Kitchen] ${subject} — ${name}`,
       html,
     }),
   });
