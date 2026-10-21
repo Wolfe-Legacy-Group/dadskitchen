@@ -95,6 +95,7 @@ export function RecipeScaler({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const batch = Number(params.get("batch"));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads ?batch= once after hydration
     if (batch === 2 || batch === 3 || batch === 4) setMultiplier(batch);
   }, []);
 
