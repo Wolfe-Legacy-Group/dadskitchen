@@ -136,16 +136,19 @@ export async function POST(request: Request) {
     }),
   ]);
 
-  if (!confirmResult.ok) {
-    console.error("Postmark confirmation error:", confirmResult.error);
-    return NextResponse.json(
-      { error: "Failed to send confirmation" },
-      { status: 500 }
+  // A lost notification is the Operator's problem, not the applicant's: log
+  // it with enough to recover the lead from the logs, whatever happens next.
+  if (!notifyResult.ok) {
+    console.error(
+      `donate-interest notification failed: ${notifyResult.error} | applicant name=${JSON.stringify(name)} email=${JSON.stringify(email)}`
     );
   }
 
-  if (!notifyResult.ok) {
-    console.error("Postmark notification error:", notifyResult.error);
+  // The applicant's result follows the applicant's own email.
+  if (!confirmResult.ok) {
+    console.error(
+      `donate-interest confirmation failed: ${confirmResult.error}`
+    );
     return NextResponse.json(
       { error: "Failed to send confirmation" },
       { status: 500 }
