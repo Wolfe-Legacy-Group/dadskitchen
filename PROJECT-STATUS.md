@@ -97,6 +97,7 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 
 ## Security Headers (all routes)
 
+- Content-Security-Policy (static, no nonces, so pages keep ISR): `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests`. `'unsafe-eval'` is added in development only. No origins beyond `'self'`: fonts are self-hosted by `next/font`, and Supabase and Resend are called server-side only.
 - X-Content-Type-Options: nosniff
 - Referrer-Policy: strict-origin-when-cross-origin
 - X-Frame-Options: DENY
