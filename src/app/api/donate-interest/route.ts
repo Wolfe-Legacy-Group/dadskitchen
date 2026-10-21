@@ -10,6 +10,7 @@ interface RequestBody {
 const NAME_MAX = 100;
 const MESSAGE_MAX = 5000;
 const EMAIL_MAX = 254;
+const LOCAL_PART_MAX = 64;
 const EMAIL_PATTERN = /^[^\s@<>()",;:\\]+@[^\s@<>()",;:\\]+\.[^\s@<>()",;:\\]+$/;
 
 // Per-instance limit; resets on cold start. Durable limiting is a follow-up.
@@ -67,6 +68,7 @@ export async function POST(request: Request) {
     name.length > NAME_MAX ||
     message.length > MESSAGE_MAX ||
     email.length > EMAIL_MAX ||
+    email.indexOf("@") > LOCAL_PART_MAX ||
     !EMAIL_PATTERN.test(email)
   ) {
     return NextResponse.json(

@@ -10,6 +10,7 @@ interface RequestBody {
 }
 
 const EMAIL_MAX = 254;
+const LOCAL_PART_MAX = 64;
 const EMAIL_PATTERN = /^[^\s@<>()",;:\\]+@[^\s@<>()",;:\\]+\.[^\s@<>()",;:\\]+$/;
 const SLUG_PATTERN = /^[a-z0-9-]{1,100}$/;
 const MAX_CHECKED_IDS = 200;
@@ -101,6 +102,7 @@ export async function POST(request: Request) {
   if (
     !email ||
     email.length > EMAIL_MAX ||
+    email.indexOf("@") > LOCAL_PART_MAX ||
     !EMAIL_PATTERN.test(email)
   ) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
