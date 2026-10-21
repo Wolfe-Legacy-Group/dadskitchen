@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Blog",
   description:
     "Updates, stories, and ideas from the Dad's Kitchen community.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function Blog() {

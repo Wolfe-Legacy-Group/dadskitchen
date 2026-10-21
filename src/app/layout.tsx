@@ -28,10 +28,31 @@ export const metadata: Metadata = {
   },
 };
 
+// No EIN or address until DK-15 supplies them.
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  name: "Mens Philanthropy Foundation",
+  alternateName: "Dad's Kitchen",
+  url: "https://dadskitchen.org",
+  logo: "https://dadskitchen.org/logo.png",
+  description:
+    "A 501(c)(3) nonprofit dedicated to strengthening fatherhood through cooking and conversation. Dad's Kitchen is where dads and kids cook side by side and talk face to face.",
+  sameAs: [
+    "https://instagram.com/dadskitchenorg",
+    "https://tiktok.com/@dadskitchenorg",
+    "https://facebook.com/dadskitchenorg",
+  ],
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${lora.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />

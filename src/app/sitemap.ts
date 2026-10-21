@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllRecipes } from "@/lib/recipes";
+import { getAllPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const recipes = await getAllRecipes();
@@ -74,5 +75,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...recipePages];
+  // Same source as the blog pages, so new posts appear here automatically.
+  const blogPages: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+    url: `https://dadskitchen.org/blog/${post.slug}`,
+    ...(post.date ? { lastModified: post.date } : {}),
+    changeFrequency: "yearly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...recipePages, ...blogPages];
 }

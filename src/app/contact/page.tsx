@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Get in touch with Dad's Kitchen and the Mens Philanthropy Foundation.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function Contact() {
