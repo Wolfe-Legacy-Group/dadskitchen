@@ -17,6 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: recipe.title,
     description: recipe.description,
+    // Without the query string, so ?batch=2 canonicalises to the recipe.
+    alternates: { canonical: `/recipes/${recipe.slug}` },
   };
 }
 
@@ -30,6 +32,13 @@ export default async function RecipePage({ params }: Props) {
     0
   );
 
+  // The recipes table has created_at / updated_at; the Recipe type doesn't
+  // declare them, but getRecipeBySlug selects every column.
+  const { created_at: createdAt, updated_at: updatedAt } = recipe as {
+    created_at?: string;
+    updated_at?: string;
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Recipe",
@@ -37,6 +46,8 @@ export default async function RecipePage({ params }: Props) {
     description: recipe.description,
     url: `https://dadskitchen.org/recipes/${recipe.slug}`,
     ...(recipe.image_url ? { image: recipe.image_url } : {}),
+    ...(createdAt ? { datePublished: createdAt } : {}),
+    ...(updatedAt ? { dateModified: updatedAt } : {}),
     author: {
       "@type": "Organization",
       name: "Dad's Kitchen — Mens Philanthropy Foundation",

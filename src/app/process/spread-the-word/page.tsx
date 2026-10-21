@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Spread the Word",
   description:
     "Follow Dad's Kitchen on social media and help us reach more dads.",
+  alternates: { canonical: "/process/spread-the-word" },
 };
 
 export default function SpreadTheWord() {

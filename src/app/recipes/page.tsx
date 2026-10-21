@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Recipes",
   description:
     "Simple, kid-friendly recipes with real costs, storage tips, and step-by-step guidance for cooking with your kids.",
+  alternates: { canonical: "/recipes" },
 };
 
 export const revalidate = 60;

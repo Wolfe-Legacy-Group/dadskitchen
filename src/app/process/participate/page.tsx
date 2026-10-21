@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Participate",
   description:
     "Try cooking with your kids using Dad's Kitchen ideas. Adapt them. Tell us how it went.",
+  alternates: { canonical: "/process/participate" },
 };
 
 export default function Participate() {

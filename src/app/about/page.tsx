@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "The story behind Dad's Kitchen — how one single dad turned mealtime into the most meaningful time of the day.",
+  alternates: { canonical: "/about" },
 };
 
 export default function About() {

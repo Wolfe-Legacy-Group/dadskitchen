@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Get Involved",
   description:
     "Support Dad's Kitchen — follow, participate, share your experience, or become a guest chef.",
+  alternates: { canonical: "/get-involved" },
 };
 
 export default function GetInvolved() {

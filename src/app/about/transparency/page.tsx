@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Transparency",
   description:
     "Nonprofit transparency for the Mens Philanthropy Foundation — EIN, leadership, governance, and policies.",
+  alternates: { canonical: "/about/transparency" },
 };
 
 export default function Transparency() {

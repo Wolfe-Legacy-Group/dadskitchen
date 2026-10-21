@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Resources",
   description:
     "Conversation starters, age-appropriate kitchen tasks, and tips for making mealtime matter.",
+  alternates: { canonical: "/resources" },
 };
 
 const conversationStarters = [

@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Be an Example",
   description:
     "Post your Dad's Kitchen experience on social media, tag us, and inspire other dads.",
+  alternates: { canonical: "/process/be-an-example" },
 };
 
 export default function BeAnExample() {

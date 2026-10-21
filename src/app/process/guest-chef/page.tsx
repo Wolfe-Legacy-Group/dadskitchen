@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Guest Chef",
   description:
     "Film a full Dad's Kitchen episode with your kids and become part of our video library.",
+  alternates: { canonical: "/process/guest-chef" },
 };
 
 export default function GuestChef() {

@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Watch",
   description:
     "Cooking videos for dads and kids — organized by age group, with conversation starters for the table.",
+  alternates: { canonical: "/watch" },
 };
 
 const videos = [
