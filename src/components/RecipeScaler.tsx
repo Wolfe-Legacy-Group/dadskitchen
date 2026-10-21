@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   Ingredient,
   Step,
@@ -174,6 +174,38 @@ export function RecipeScaler({
     ? TABS
     : TABS.filter((t) => t.key !== "substitutions");
 
+  const tabRefs = useRef<Partial<Record<TabKey, HTMLButtonElement | null>>>({});
+
+  // WAI-ARIA tabs pattern, automatic activation: arrows (with wrap) and
+  // Home/End move focus and select; only the selected tab is in the Tab order.
+  function handleTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const keys = visibleTabs.map((t) => t.key);
+    const current = keys.indexOf(activeTab);
+    let next: number;
+    switch (e.key) {
+      case "ArrowRight":
+        next = (current + 1) % keys.length;
+        break;
+      case "ArrowLeft":
+        next = (current - 1 + keys.length) % keys.length;
+        break;
+      case "Home":
+        next = 0;
+        break;
+      case "End":
+        next = keys.length - 1;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    const key = keys[next];
+    setActiveTab(key);
+    const el = tabRefs.current[key];
+    el?.focus();
+    el?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+
   return (
     <>
       {/* Batch size toggle */}
@@ -239,15 +271,20 @@ export function RecipeScaler({
         <div
           role="tablist"
           aria-label="Recipe sections"
+          onKeyDown={handleTabKeyDown}
           className="flex gap-1 overflow-x-auto border-b border-card-border scrollbar-hide"
         >
           {visibleTabs.map((tab) => (
             <button
               key={tab.key}
+              ref={(el) => {
+                tabRefs.current[tab.key] = el;
+              }}
               role="tab"
               id={`tab-${tab.key}`}
               aria-selected={activeTab === tab.key}
               aria-controls={`panel-${tab.key}`}
+              tabIndex={activeTab === tab.key ? 0 : -1}
               onClick={() => setActiveTab(tab.key)}
               className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === tab.key
@@ -267,6 +304,7 @@ export function RecipeScaler({
         role="tabpanel"
         id={`panel-${activeTab}`}
         aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
         className="mt-6"
       >
         {activeTab === "convos" && (
