@@ -75,7 +75,6 @@ export function RecipeScaler({
   yieldAmount,
   yieldUnit,
   ingredients,
-  recipeName,
   recipeSlug,
   steps,
   substitutions,
@@ -96,6 +95,7 @@ export function RecipeScaler({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const batch = Number(params.get("batch"));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads ?batch= once after hydration
     if (batch === 2 || batch === 3 || batch === 4) setMultiplier(batch);
   }, []);
 
@@ -140,18 +140,9 @@ export function RecipeScaler({
     e.preventDefault();
     setSending(true);
 
-    const items = ingredients
-      .filter((i) => !checked[i.id])
-      .map((i) => ({
-        name: i.name,
-        quantity: getScaledQty(i),
-        unit: i.unit,
-        cost: (Number(i.estimated_cost_usd) * multiplier).toFixed(2),
-      }));
-
-    const alreadyHave = ingredients
+    const checkedIngredientIds = ingredients
       .filter((i) => checked[i.id])
-      .map((i) => `${getScaledQty(i)} ${i.unit} ${i.name}`);
+      .map((i) => i.id);
 
     try {
       const res = await fetch("/api/send-shopping-list", {
@@ -159,12 +150,9 @@ export function RecipeScaler({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          recipeName,
           recipeSlug,
-          items,
-          alreadyHave,
-          totalCost: needCost.toFixed(2),
           multiplier,
+          checkedIngredientIds,
         }),
       });
       if (res.ok) {
