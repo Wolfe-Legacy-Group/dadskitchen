@@ -18,7 +18,7 @@ export function Footer() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
+          <p className="text-xs font-semibold uppercase tracking-widest text-white/50">
             Pages
           </p>
           <nav className="mt-3 flex flex-col gap-2">
@@ -34,7 +34,7 @@ export function Footer() {
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
+          <p className="text-xs font-semibold uppercase tracking-widest text-white/50">
             Follow
           </p>
           <nav className="mt-3 flex flex-col gap-2">
@@ -67,7 +67,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10 px-6 py-4">
-        <p className="mx-auto max-w-6xl text-xs text-white/40">
+        <p className="mx-auto max-w-6xl text-xs text-white/50">
           &copy; {new Date().getFullYear()} Mens Philanthropy Foundation. All
           rights reserved.
         </p>

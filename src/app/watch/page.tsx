@@ -107,7 +107,7 @@ export default function Watch() {
                 >
                   <polygon points="9.5,6.5 9.5,17.5 18,12" />
                 </svg>
-                <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
+                <span className="rounded-full bg-black/50 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-widest text-white">
                   Coming soon
                 </span>
               </div>

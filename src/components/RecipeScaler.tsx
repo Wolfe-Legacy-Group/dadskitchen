@@ -646,7 +646,7 @@ export function RecipeScaler({
             <p className="mt-4 font-serif text-lg text-foreground-3">
               Coming soon
             </p>
-            <p className="mt-1 text-sm text-foreground-3/70">
+            <p className="mt-1 text-sm text-foreground-3">
               A step-by-step cooking video for this recipe is on the way.
             </p>
           </section>
