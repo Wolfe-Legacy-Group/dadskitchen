@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { escapeHtml } from "@/lib/escape-html";
+import { emailToken, sendEmail } from "@/lib/email";
+import { clientIp, createRateLimiter, isValidEmail, singleLine } from "@/lib/email-guards";
 
 interface RequestBody {
   name: string;
@@ -11,40 +13,12 @@ interface RequestBody {
 const NAME_MAX = 100;
 const SUBJECT_MAX = 200;
 const MESSAGE_MAX = 5000;
-const EMAIL_MAX = 254;
-const LOCAL_PART_MAX = 64;
-const EMAIL_PATTERN = /^[^\s@<>()",;:\\]+@[^\s@<>()",;:\\]+\.[^\s@<>()",;:\\]+$/;
 
-// Per-instance limit; resets on cold start. Durable limiting is a follow-up.
-const RATE_LIMIT = 5;
-const RATE_WINDOW_MS = 10 * 60 * 1000;
-const sendsByIp = new Map<string, number[]>();
-
-function clientIp(request: Request): string {
-  return (
-    request.headers.get("x-real-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown"
-  );
-}
-
-function recentSends(ip: string, now: number): number[] {
-  if (sendsByIp.size > 1000) {
-    for (const [key, times] of sendsByIp) {
-      if (times.every((t) => now - t >= RATE_WINDOW_MS)) sendsByIp.delete(key);
-    }
-  }
-  return (sendsByIp.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-}
-
-// Collapses CR/LF so a value can't add lines to a mail header.
-function singleLine(value: string): string {
-  return value.replace(/[\r\n]+/g, " ").trim();
-}
+const limiter = createRateLimiter();
 
 export async function POST(request: Request) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  const token = emailToken();
+  if (!token) {
     return NextResponse.json(
       { error: "Email service not configured" },
       { status: 500 }
@@ -74,9 +48,7 @@ export async function POST(request: Request) {
     name.length > NAME_MAX ||
     subject.length > SUBJECT_MAX ||
     message.length > MESSAGE_MAX ||
-    email.length > EMAIL_MAX ||
-    email.indexOf("@") > LOCAL_PART_MAX ||
-    !EMAIL_PATTERN.test(email)
+    !isValidEmail(email)
   ) {
     return NextResponse.json(
       { error: "Please check your entries and try again" },
@@ -86,14 +58,13 @@ export async function POST(request: Request) {
 
   const ip = clientIp(request);
   const now = Date.now();
-  const sends = recentSends(ip, now);
-  if (sends.length >= RATE_LIMIT) {
+  if (limiter.isLimited(ip, now)) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
       { status: 429 }
     );
   }
-  sendsByIp.set(ip, [...sends, now]);
+  limiter.record(ip, now);
 
   const notifyEmail =
     process.env.CONTACT_NOTIFY_EMAIL ?? "perry@wolfelegacies.com";
@@ -124,24 +95,15 @@ export async function POST(request: Request) {
     </div>
   `;
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Dad's Kitchen <noreply@dadskitchen.org>",
-      to: notifyEmail,
-      replyTo: email,
-      subject: `[Dad's Kitchen] ${subject} — ${name}`,
-      html,
-    }),
+  const result = await sendEmail(token, {
+    to: notifyEmail,
+    replyTo: email,
+    subject: `[Dad's Kitchen] ${subject} — ${name}`,
+    html,
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    console.error("Resend contact error:", err);
+  if (!result.ok) {
+    console.error("Postmark contact error:", result.error);
     return NextResponse.json(
       { error: "Failed to send message" },
       { status: 500 }

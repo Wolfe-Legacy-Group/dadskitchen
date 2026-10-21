@@ -8,7 +8,7 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 
 - **Stack**: Next.js (App Router) + TypeScript + Tailwind CSS
 - **Database**: Supabase (project: `sgdrwhpsuohhizcxtloy`)
-- **Email**: Resend (from `noreply@dadskitchen.org`)
+- **Email**: Postmark (from `noreply@dadskitchen.org`, message stream `outbound`; shared sender in `src/lib/email.ts`)
 - **Hosting**: Vercel (team: ucperrys-projects, project: dadskitchen)
 - **Repo**: github.com/Wolfe-Legacy-Group/dadskitchen (main branch)
 - **Dev server**: port 3002
@@ -24,8 +24,8 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 | `/about/transparency` | 501(c)(3) status, EIN (placeholder), leadership, policies, fund usage | Static |
 | `/blog` | Blog index | Supabase |
 | `/blog/[slug]` | Blog post detail | Supabase |
-| `/contact` | Contact form (name, email, subject dropdown, message) | Resend API |
-| `/get-involved` | Volunteer options + "Apply to Donate" form | Resend API |
+| `/contact` | Contact form (name, email, subject dropdown, message) | Postmark API |
+| `/get-involved` | Volunteer options + "Apply to Donate" form | Postmark API |
 | `/process/spread-the-word` | How to help — sharing | Static |
 | `/process/participate` | How to help — cooking with your kids | Static |
 | `/process/be-an-example` | How to help — posting your experience | Static |
@@ -39,9 +39,11 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 
 | Endpoint | Purpose |
 |---|---|
-| `POST /api/contact` | Sends contact form submission to perry@wolfelegacies.com via Resend |
-| `POST /api/donate-interest` | Sends donation interest confirmation to applicant + notification to Perry |
-| `POST /api/send-shopping-list` | Emails a recipe shopping list to the user |
+| `POST /api/contact` | Sends contact form submission to perry@wolfelegacies.com via Postmark |
+| `POST /api/donate-interest` | Sends donation interest confirmation to applicant + notification to Perry via Postmark |
+| `POST /api/send-shopping-list` | Emails a recipe shopping list to the user via Postmark |
+
+All three share the input and abuse guards in `src/lib/email-guards.ts` (email format and length checks, CR/LF stripping, 5 sends per client IP per 10 minutes per route).
 
 ## Components
 
@@ -97,7 +99,7 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 
 ## Security Headers (all routes)
 
-- Content-Security-Policy (static, no nonces, so pages keep ISR): `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests`. `'unsafe-eval'` is added in development only. No origins beyond `'self'`: fonts are self-hosted by `next/font`, and Supabase and Resend are called server-side only.
+- Content-Security-Policy (static, no nonces, so pages keep ISR): `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests`. `'unsafe-eval'` is added in development only. No origins beyond `'self'`: fonts are self-hosted by `next/font`, and Supabase and Postmark are called server-side only.
 - X-Content-Type-Options: nosniff
 - Referrer-Policy: strict-origin-when-cross-origin
 - X-Frame-Options: DENY
@@ -118,7 +120,7 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key | Yes |
-| `RESEND_API_KEY` | Resend email API key | Yes (for forms) |
+| `POSTMARK_SERVER_TOKEN` | Postmark server API token (DadsKitchen server) | Yes (for forms) |
 | `CONTACT_NOTIFY_EMAIL` | Where contact forms go (default: perry@wolfelegacies.com) | No |
 | `DONATE_NOTIFY_EMAIL` | Where donation interests go (default: perry@wolfelegacies.com) | No |
 
@@ -152,4 +154,4 @@ Dad's Kitchen (dadskitchen.org) is the web presence for the Mens Philanthropy Fo
 - **Watch page**: Currently a placeholder; needs real video content from DK-17
 - **Blog content**: Blog infrastructure exists but needs posts
 - **Ingredient cost audit**: Sunday Roast costs updated to full package prices; other recipes should be spot-checked for the same pattern
-- **Email domain**: Resend sends from noreply@dadskitchen.org — verify DNS/DKIM is configured
+- **Email domain**: Postmark sends from noreply@dadskitchen.org (DKIM and Return-Path verified in Postmark). `RESEND_API_KEY` stays in Vercel until the Operator cancels Resend

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { escapeHtml } from "@/lib/escape-html";
+import { emailToken, sendEmail } from "@/lib/email";
+import { clientIp, createRateLimiter, isValidEmail, singleLine } from "@/lib/email-guards";
 
 interface RequestBody {
   name: string;
@@ -9,40 +11,12 @@ interface RequestBody {
 
 const NAME_MAX = 100;
 const MESSAGE_MAX = 5000;
-const EMAIL_MAX = 254;
-const LOCAL_PART_MAX = 64;
-const EMAIL_PATTERN = /^[^\s@<>()",;:\\]+@[^\s@<>()",;:\\]+\.[^\s@<>()",;:\\]+$/;
 
-// Per-instance limit; resets on cold start. Durable limiting is a follow-up.
-const RATE_LIMIT = 5;
-const RATE_WINDOW_MS = 10 * 60 * 1000;
-const sendsByIp = new Map<string, number[]>();
-
-function clientIp(request: Request): string {
-  return (
-    request.headers.get("x-real-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown"
-  );
-}
-
-function recentSends(ip: string, now: number): number[] {
-  if (sendsByIp.size > 1000) {
-    for (const [key, times] of sendsByIp) {
-      if (times.every((t) => now - t >= RATE_WINDOW_MS)) sendsByIp.delete(key);
-    }
-  }
-  return (sendsByIp.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-}
-
-// Collapses CR/LF so a value can't add lines to a mail header.
-function singleLine(value: string): string {
-  return value.replace(/[\r\n]+/g, " ").trim();
-}
+const limiter = createRateLimiter();
 
 export async function POST(request: Request) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  const token = emailToken();
+  if (!token) {
     return NextResponse.json(
       { error: "Email service not configured" },
       { status: 500 }
@@ -67,9 +41,7 @@ export async function POST(request: Request) {
   if (
     name.length > NAME_MAX ||
     message.length > MESSAGE_MAX ||
-    email.length > EMAIL_MAX ||
-    email.indexOf("@") > LOCAL_PART_MAX ||
-    !EMAIL_PATTERN.test(email)
+    !isValidEmail(email)
   ) {
     return NextResponse.json(
       { error: "Please check your entries and try again" },
@@ -79,14 +51,13 @@ export async function POST(request: Request) {
 
   const ip = clientIp(request);
   const now = Date.now();
-  const sends = recentSends(ip, now);
-  if (sends.length >= RATE_LIMIT) {
+  if (limiter.isLimited(ip, now)) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
       { status: 429 }
     );
   }
-  sendsByIp.set(ip, [...sends, now]);
+  limiter.record(ip, now);
 
   const firstName = escapeHtml(name.split(/\s+/)[0]);
 
@@ -151,47 +122,34 @@ export async function POST(request: Request) {
 
   const notifyEmail = process.env.DONATE_NOTIFY_EMAIL ?? "perry@wolfelegacies.com";
 
-  const [confirmRes, notifyRes] = await Promise.all([
-    fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Dad's Kitchen <noreply@dadskitchen.org>",
-        to: email,
-        subject: "Thank you for your interest in supporting Dad's Kitchen",
-        html: confirmationHtml,
-      }),
+  const [confirmResult, notifyResult] = await Promise.all([
+    sendEmail(token, {
+      to: email,
+      subject: "Thank you for your interest in supporting Dad's Kitchen",
+      html: confirmationHtml,
     }),
-    fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Dad's Kitchen <noreply@dadskitchen.org>",
-        to: notifyEmail,
-        replyTo: email,
-        subject: `Donation interest: ${name}`,
-        html: notificationHtml,
-      }),
+    sendEmail(token, {
+      to: notifyEmail,
+      replyTo: email,
+      subject: `Donation interest: ${name}`,
+      html: notificationHtml,
     }),
   ]);
 
-  if (!confirmRes.ok) {
-    const err = await confirmRes.text();
-    console.error("Resend confirmation error:", err);
+  if (!confirmResult.ok) {
+    console.error("Postmark confirmation error:", confirmResult.error);
     return NextResponse.json(
       { error: "Failed to send confirmation" },
       { status: 500 }
     );
   }
 
-  if (!notifyRes.ok) {
-    console.error("Resend notification error:", await notifyRes.text());
+  if (!notifyResult.ok) {
+    console.error("Postmark notification error:", notifyResult.error);
+    return NextResponse.json(
+      { error: "Failed to send confirmation" },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ ok: true });

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getRecipeBySlug, type Ingredient } from "@/lib/recipes";
 import { escapeHtml } from "@/lib/escape-html";
+import { emailToken, sendEmail } from "@/lib/email";
+import { clientIp, createRateLimiter, isValidEmail } from "@/lib/email-guards";
 
 interface RequestBody {
   email: string;
@@ -9,33 +11,10 @@ interface RequestBody {
   checkedIngredientIds: string[];
 }
 
-const EMAIL_MAX = 254;
-const LOCAL_PART_MAX = 64;
-const EMAIL_PATTERN = /^[^\s@<>()",;:\\]+@[^\s@<>()",;:\\]+\.[^\s@<>()",;:\\]+$/;
 const SLUG_PATTERN = /^[a-z0-9-]{1,100}$/;
 const MAX_CHECKED_IDS = 200;
 
-// Per-instance limit; resets on cold start. Durable limiting is a follow-up.
-const RATE_LIMIT = 5;
-const RATE_WINDOW_MS = 10 * 60 * 1000;
-const sendsByIp = new Map<string, number[]>();
-
-function clientIp(request: Request): string {
-  return (
-    request.headers.get("x-real-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown"
-  );
-}
-
-function recentSends(ip: string, now: number): number[] {
-  if (sendsByIp.size > 1000) {
-    for (const [key, times] of sendsByIp) {
-      if (times.every((t) => now - t >= RATE_WINDOW_MS)) sendsByIp.delete(key);
-    }
-  }
-  return (sendsByIp.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-}
+const limiter = createRateLimiter();
 
 const FRACTIONS: [number, string][] = [
   [0.125, "1/8"],
@@ -81,8 +60,8 @@ function scaledQty(ing: Ingredient, multiplier: number): string {
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  const token = emailToken();
+  if (!token) {
     return NextResponse.json(
       { error: "Email service not configured" },
       { status: 500 }
@@ -101,9 +80,7 @@ export async function POST(request: Request) {
 
   if (
     !email ||
-    email.length > EMAIL_MAX ||
-    email.indexOf("@") > LOCAL_PART_MAX ||
-    !EMAIL_PATTERN.test(email)
+    !isValidEmail(email)
   ) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
@@ -128,8 +105,7 @@ export async function POST(request: Request) {
 
   const ip = clientIp(request);
   const now = Date.now();
-  const sends = recentSends(ip, now);
-  if (sends.length >= RATE_LIMIT) {
+  if (limiter.isLimited(ip, now)) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
       { status: 429 }
@@ -149,7 +125,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  sendsByIp.set(ip, [...sends, now]);
+  limiter.record(ip, now);
 
   const recipeName = recipe.title;
   const totalCost = needed
@@ -246,23 +222,14 @@ export async function POST(request: Request) {
     </div>
   `;
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Dad's Kitchen <noreply@dadskitchen.org>",
-      to: email,
-      subject: `Your shopping list for ${recipeName.replace(/[\r\n]+/g, " ")}`,
-      html,
-    }),
+  const result = await sendEmail(token, {
+    to: email,
+    subject: `Your shopping list for ${recipeName.replace(/[\r\n]+/g, " ")}`,
+    html,
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    console.error("Resend error:", err);
+  if (!result.ok) {
+    console.error("Postmark error:", result.error);
     return NextResponse.json(
       { error: "Failed to send email" },
       { status: 500 }
